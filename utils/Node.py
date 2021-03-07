@@ -1,4 +1,11 @@
 class Node:
-    def __init__(self, idd, label):
+    def __init__(self, idd, data):
         self.idd = idd
-        self.label = label
+        self.data = data
+        self.next = None
+
+    def getId(self):
+        return self.idd
+
+    def getData(self):
+        return self.data
