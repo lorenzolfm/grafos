@@ -17,11 +17,11 @@ class Grafo:
     """
     def __init__(self, arquivo):
         self.edges = [None for i in range(1000)]
+        self.degree = []
         self.nVertices = self._lerArquivo(arquivo)
 
         self.directed = False
-
-        self.degree = [0 for i in range(self.nVertices)]
+        self.nEdges = 0
 
     """
     Quantidade de Vértices
@@ -29,7 +29,7 @@ class Grafo:
     Return: Quantidade de vértices do grafo (inteiro).
     """
     def qtdVertices(self):
-        return self._vertice
+        return self.nVertices
 
 
     """
@@ -39,7 +39,7 @@ class Grafo:
     Return: Quantidade de arestas (inteiro).
     """
     def qtdArestas(self):
-        return len(self._arestas)
+        return self.nEdges
 
 
     """
@@ -49,7 +49,7 @@ class Grafo:
     Return: Grau do vértice passado como argumento.
     """
     def grauVertice(self, vertice):
-        pass
+        return self.degree[vertice - 1]
 
 
     """
@@ -108,7 +108,7 @@ class Grafo:
             data = data.splitlines()
 
             numVertices = int(data[0].split()[1])
-
+            self.degree = [0 for i in range(numVertices)]
 
             data = data[1::]
 
@@ -153,3 +153,6 @@ class Grafo:
 
         edgeNode = EdgeNode(y, weight, self.edges[x - 1])
         self.edges[x - 1] = edgeNode
+
+        self.degree[x - 1] += 1
+        self.degree[y - 1] += 1

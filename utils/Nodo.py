@@ -6,3 +6,9 @@ class EdgeNode:
 
     def getDegree(self):
         return len(listOfAdjacents)
+
+class Vertice:
+    def __init__(self, idd, label, degree):
+        self.idd = idd
+        self.label = label
+        self.degree = 0
