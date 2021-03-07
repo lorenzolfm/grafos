@@ -1,4 +1,4 @@
 import os
-from utils.Grafo import Grafo
+from utils.Graph import Graph
 
-grafo = Grafo('./assets/fln_pequena.net')
+grafo = Graph('./assets/fln_pequena.net')
