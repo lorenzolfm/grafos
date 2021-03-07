@@ -59,7 +59,7 @@ class Grafo:
     Return: Rótulo do vértice passado como argumento (TIPO?).
     """
     def rotulo(self, vertice):
-        pass
+        return
 
     """
     Vizinhos
