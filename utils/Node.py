@@ -9,3 +9,6 @@ class Node:
 
     def getData(self):
         return self.data
+
+    def setNext(self, adjNode):
+        self.next = adjNode
