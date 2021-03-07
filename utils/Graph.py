@@ -8,6 +8,7 @@ class Graph:
 
         self._nodes = [None] * self._numberOfNodes
         self._insertNodes(rawNodes)
+        self._insertEdges(rawEdges)
 
 
     def getNumberOfNodes(self):
@@ -19,7 +20,6 @@ class Graph:
             fileData = fileData.splitlines()
 
             numberOfNodes = self._getNumberOfNodesFrom(fileData)
-            print(numberOfNodes)
 
             rawNodes = fileData[1:numberOfNodes + 1:]
 
@@ -35,7 +35,10 @@ class Graph:
             node = Node(idd, data)
 
             self._nodes[node.getId() - 1] = node
-            print(f"Adiconando vértice {node.getId()} na posição {node.getId() - 1} da lista")
+            print(f"Adicionando vértice {node.getId()} na posição {node.getId() - 1} da lista")
+
+    def _insertEdges(self, rawEdges):
+        pass
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
