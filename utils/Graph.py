@@ -19,6 +19,9 @@ class Graph:
     def qtdArestas(self):
         return self._numberOfEdges
 
+    def Node(self, v):
+        return self._nodes[v - 1]
+
     def grau(self, v):
         return len(self._nodes[v - 1].getAdjList())
 

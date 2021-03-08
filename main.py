@@ -1,6 +1,6 @@
 import os
 from utils.Graph import Graph
-from width_search import width_search
+from utils.width_search import *
 
 # grafo = Graph('./assets/fln_pequena.net')
 # print()
@@ -32,4 +32,5 @@ print(f"Há aresta entre 1 e 5? {grafo.haAresta(1, 5)}")
 print(f"Qual o peso de 1 e 3? {grafo.peso(1, 3)}")
 print(f"Qual o peso de 1 e 5? {grafo.peso(1, 5)}")
 
-width_search(grafo, 1)
+level_list(grafo, grafo.Node(1))
+    
