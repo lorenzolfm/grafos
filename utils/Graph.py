@@ -48,13 +48,17 @@ class Graph:
             destinyId = int(rawEdge[1])
             weight = float(rawEdge[2])
 
-            source = self._nodes[sourceId - 1]
-            adjNode = AdjNode(destinyId, weight)
-            source.setNext(adjNode)
+            # source = self._nodes[sourceId - 1]
+            # adjNode = AdjNode(destinyId, weight)
+            # source.setNext(adjNode)
 
-            destiny = self._nodes[destinyId - 1]
-            adjNode = AdjNode(sourceId, weight)
-            destiny.setNext(adjNode)
+            # destiny = self._nodes[destinyId - 1]
+            # adjNode = AdjNode(sourceId, weight)
+            # destiny.setNext(adjNode)
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
+
+    def printGraph(self):
+        for node in self._nodes:
+            print()
