@@ -1,4 +1,3 @@
-import os
 from utils.Graph import Graph
 
 print()
