@@ -13,8 +13,37 @@ class Graph:
         self._insertEdges(rawEdges)
 
 
-    def getNumberOfNodes(self):
+    def qtdVertices(self):
         return self._numberOfNodes
+
+    def qtdArestas(self):
+        return self._numberOfEdges
+
+    def grau(self, v):
+        return len(self._nodes[v - 1].getAdjList())
+
+    def rotulo(self, v):
+        return self._nodes[v - 1].getData()
+
+    def vizinhos(self, v):
+        return self._nodes[v - 1].getAdjList()
+
+    def haAresta(self, u, v):
+        source = self._nodes[u - 1]
+
+        for adjacentNode in source.getAdjList():
+            if adjacentNode.getId() == v:
+                return True
+
+        return False
+
+    def peso(self, u, v):
+        if self.haAresta(u, v):
+            source = self._nodes[u - 1]
+            for adjacentNode in source.getAdjList():
+                if adjacentNode.getId() == v:
+                    return adjacentNode.getWeight()
+        return float('inf')
 
 
     def _readFile(self, file):
@@ -36,8 +65,16 @@ class Graph:
             rawNode = rawNode.split()
 
             idd = int(rawNode[0])
-            data = rawNode[1]
-            node = Node(idd, data)
+            data = rawNode[1::]
+
+            dataWithNotQuotationMarks = []
+            for word in data:
+                word = word.replace('"', "")
+                dataWithNotQuotationMarks.append(word)
+
+            dataString = ' '.join(dataWithNotQuotationMarks)
+
+            node = Node(idd, dataString)
 
             self._nodes[node.getId() - 1] = node
 
@@ -51,6 +88,7 @@ class Graph:
             weight = float(rawEdge[2])
 
             self.addEdge(sourceId, destinyId, weight)
+            self._numberOfEdges += 1
 
 
     def addEdge(self, sourceId, destinyId, weight):

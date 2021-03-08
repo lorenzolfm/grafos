@@ -3,6 +3,9 @@ class AdjNode:
         self.idd = idd
         self.weight = weight
 
+    def getId(self):
+        return self.idd
+
     def getWeight(self):
         return self.weight
 
