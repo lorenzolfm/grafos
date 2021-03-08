@@ -1,3 +1,4 @@
+from queue import Queue
 from utils.Node import Node
 from utils.AdjNode import AdjNode
 
@@ -12,12 +13,14 @@ class Graph:
         self._insertNodes(rawNodes)
         self._insertEdges(rawEdges)
 
-
     def qtdVertices(self):
         return self._numberOfNodes
 
     def qtdArestas(self):
         return self._numberOfEdges
+
+    def getNode(self, v):
+        return self._nodes[v - 1]
 
     def grau(self, v):
         return len(self._nodes[v - 1].getAdjList())
@@ -99,6 +102,52 @@ class Graph:
         destiny = self._nodes[destinyId - 1]
         adjNode = AdjNode(sourceId, weight)
         destiny.addAdjacent(adjNode)
+
+
+    def breadthFirstSearch(self, vertex):
+        # Configurando vetores dos vértices
+        known = [False] * self._numberOfNodes
+        edge_distance = [float("inf")] * self._numberOfNodes
+        ancestral = [None] * self._numberOfNodes
+
+        # Configurando vértice de origem
+        vertexId = vertex.getId()
+        known[vertexId - 1] = True
+        edge_distance[vertexId - 1] = 0
+
+        # Inicializando fila
+        queue = Queue(maxsize = self._numberOfNodes)
+        queue.put(vertexId)
+
+        # Visitas
+        while not queue.empty():
+            actual = queue.get()
+
+            adjacent = self.getNode(actual).getAdjList()
+            for v in adjacent:
+                vId = v.getId()
+                if known[vId - 1] == False:
+                    known[vId - 1] = True
+                    edge_distance[vId - 1] = edge_distance[actual - 1] + 1
+                    ancestral[vId - 1] = actual
+                    queue.put(vId)
+
+        return edge_distance, ancestral
+
+    def level_list(self, vertex):
+        edge_distance, _ = self.breadthFirstSearch(vertex)
+        level_list = []
+        size = max(edge_distance) + 1
+
+        for i in range(size):
+            level_list.append([])
+
+        for i in range(len(edge_distance)):
+            level_list[edge_distance[i]].append(i + 1)
+
+        for i in range(size):
+            print(f"{i}: {level_list[i]}")
+
 
 
     def _getNumberOfNodesFrom(self, fileData):
