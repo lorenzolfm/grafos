@@ -1,75 +1,32 @@
 import os
+from utils.Graph import Graph
 
-"""
-Grafo não-dirigido e ponderado
-"""
-class Grafo:
-    def __init__(self, arquivo):
-        self.vertices, self.arestas = self._lerArquivo(arquivo)
+# grafo = Graph('./assets/fln_pequena.net')
+# print()
+grafo = Graph('./assets/agm_tiny.net')
+grafo.printGraph()
+print()
+print(f"Qtd de vertices: {grafo.qtdVertices()}")
+print(f"Qtd de arestas: {grafo.qtdArestas()}")
+print(f"Grau do vertice 1: {grafo.grau(1)}")
+print(f"Grau do vertice 2: {grafo.grau(2)}")
+print(f"Rotulo do vertice 1: {grafo.rotulo(1)}")
+print(f"Vizinhos do vertice 1: {grafo.vizinhos(1)}")
+print(f"Há aresta entre 1 e 2? {grafo.haAresta(1, 2)}")
+print(f"Há aresta entre 1 e 5? {grafo.haAresta(1, 5)}")
+print(f"Qual o peso de 1 e 3? {grafo.peso(1, 3)}")
+print(f"Qual o peso de 1 e 5? {grafo.peso(1, 5)}")
 
-    """
-    Retorna a quantidade de vértices;
-    """
-    def qtdVertices(self):
-        return len(self.vertices)
+print()
 
-    """
-    Retorna a quantidade de arestas;
-    """
-    def qtdArestas(self):
-        return len(self.arestas)
-
-    """
-    Retorna o grau de um vértice
-    """
-    def grauVertice(self, vertice):
-        pass
-
-    def rotulo(self, vertice):
-        pass
-
-    def vizinhos(self, vertice):
-        pass
-
-    def haAresta(self, u, v):
-        pass
-
-    def peso(self, u, v):
-        pass
-
-    def _lerArquivo(self, arquivo):
-        with open(arquivo) as file:
-            vertices = []
-
-            data = file.read()
-            data = data.splitlines()
-
-            numVertices = int(data[0].split()[1])
-            data = data[1::]
-
-            for i in range(numVertices):
-                vertices.append(
-                    self._addVertice(data[i])
-                )
-
-            data = data[numVertices::]
-            data = data[1::]
-
-            arestas = []
-
-            for aresta in data:
-                arestas.append(
-                    self._addAresta(aresta)
-                )
-
-            return vertices, arestas
-
-    def _addVertice(self, verticeString):
-        vertice = verticeString.split()
-        return {"id": int(vertice[0]), "rotulo": vertice[1]}
-
-    def _addAresta(self, arestaString):
-        aresta = arestaString.split()
-        return {"aresta": (int(aresta[0]), int(aresta[1])), "peso": float(aresta[2])}
-
-grafo = Grafo('./fln_pequena.net')
+grafo = Graph('./assets/fln_pequena.net')
+print(f"Qtd de vertices: {grafo.qtdVertices()}")
+print(f"Qtd de arestas: {grafo.qtdArestas()}")
+print(f"Grau do vertice 1: {grafo.grau(1)}")
+print(f"Grau do vertice 2: {grafo.grau(2)}")
+print(f"Rotulo do vertice 1: {grafo.rotulo(1)}")
+print(f"Vizinhos do vertice 1: {grafo.vizinhos(1)}")
+print(f"Há aresta entre 1 e 2? {grafo.haAresta(1, 2)}")
+print(f"Há aresta entre 1 e 5? {grafo.haAresta(1, 5)}")
+print(f"Qual o peso de 1 e 3? {grafo.peso(1, 3)}")
+print(f"Qual o peso de 1 e 5? {grafo.peso(1, 5)}")
