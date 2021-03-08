@@ -103,7 +103,8 @@ class Graph:
         adjNode = AdjNode(sourceId, weight)
         destiny.addAdjacent(adjNode)
 
-    def width_search(self, vertex):
+
+    def breadthFirstSearch(self, vertex):
         # Configurando vetores dos vértices
         known = [False] * self._numberOfNodes
         edge_distance = [float("inf")] * self._numberOfNodes
@@ -134,7 +135,7 @@ class Graph:
         return edge_distance, ancestral
 
     def level_list(self, vertex):
-        edge_distance, _ = self.width_search(vertex)
+        edge_distance, _ = self.breadthFirstSearch(vertex)
         level_list = []
         size = max(edge_distance) + 1
 
