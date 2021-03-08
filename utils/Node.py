@@ -2,7 +2,7 @@ class Node:
     def __init__(self, idd, data):
         self.idd = idd
         self.data = data
-        self.next = None
+        self.adjacents = []
 
     def getId(self):
         return self.idd
@@ -10,5 +10,8 @@ class Node:
     def getData(self):
         return self.data
 
-    def setNext(self, adjNode):
-        self.next = adjNode
+    def addAdjacent(self, adjNode):
+        self.adjacents.append(adjNode)
+
+    def getAdjList(self):
+        return self.adjacents

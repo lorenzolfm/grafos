@@ -16,6 +16,7 @@ class Graph:
     def getNumberOfNodes(self):
         return self._numberOfNodes
 
+
     def _readFile(self, file):
         with open(file) as f:
             fileData = f.read()
@@ -29,6 +30,7 @@ class Graph:
 
             return numberOfNodes, rawNodes, rawEdges
 
+
     def _insertNodes(self, rawNodes):
         for rawNode in rawNodes:
             rawNode = rawNode.split()
@@ -38,7 +40,7 @@ class Graph:
             node = Node(idd, data)
 
             self._nodes[node.getId() - 1] = node
-            # print(f"Adicionando vértice {node.getId()} na posição {node.getId() - 1} da lista")
+
 
     def _insertEdges(self, rawEdges):
         for rawEdge in rawEdges:
@@ -48,17 +50,23 @@ class Graph:
             destinyId = int(rawEdge[1])
             weight = float(rawEdge[2])
 
-            # source = self._nodes[sourceId - 1]
-            # adjNode = AdjNode(destinyId, weight)
-            # source.setNext(adjNode)
+            self.addEdge(sourceId, destinyId, weight)
 
-            # destiny = self._nodes[destinyId - 1]
-            # adjNode = AdjNode(sourceId, weight)
-            # destiny.setNext(adjNode)
+
+    def addEdge(self, sourceId, destinyId, weight):
+        source = self._nodes[sourceId - 1]
+        adjNode = AdjNode(destinyId, weight)
+        source.addAdjacent(adjNode)
+
+        destiny = self._nodes[destinyId - 1]
+        adjNode = AdjNode(sourceId, weight)
+        destiny.addAdjacent(adjNode)
+
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
 
+
     def printGraph(self):
         for node in self._nodes:
-            print()
+            print(f"Vertice {node.getId()}: {node.getAdjList()}")

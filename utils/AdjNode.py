@@ -5,3 +5,6 @@ class AdjNode:
 
     def getWeight(self):
         return self.weight
+
+    def __repr__(self):
+        return f"({self.idd}, {self.weight})"
