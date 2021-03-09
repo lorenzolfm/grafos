@@ -1,6 +1,7 @@
 from queue import Queue
 from utils.Node import Node
 from utils.AdjNode import AdjNode
+from random import randint
 
 class Graph:
     def __init__(self, file):
@@ -148,7 +149,23 @@ class Graph:
         for i in range(size):
             print(f"{i}: {level_list[i]}")
 
+    def eulerian(self):
+        knowm = [False] * self.qtdArestas()
+        vertex = randint(0, self.qtdVertices() - 1)
 
+        r, cycle = subcycle_search(vertex, known)
+
+        if not r:
+            return (False, None)
+        elif cycle.count(False):
+            return (False, None)
+        else:
+            return (True, cycle)
+
+    def subcycle_search(self, vertex, known):
+        cycle = [vertex]
+        initial = vertex
+        pass
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
