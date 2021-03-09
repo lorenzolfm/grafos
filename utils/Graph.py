@@ -150,10 +150,12 @@ class Graph:
             print(f"{i}: {level_list[i]}")
 
     def eulerian(self):
-        knowm = [False] * self.qtdArestas()
+        known = [False] * self.qtdArestas()
+        print(known)
         vertex = randint(0, self.qtdVertices() - 1)
+        print(vertex)
 
-        r, cycle = subcycle_search(vertex, known)
+        r, cycle = self.subcycle_search(vertex, known)
 
         if not r:
             return (False, None)
@@ -166,7 +168,10 @@ class Graph:
         cycle = [vertex]
         initial_vertex = vertex
         vertex = None
-        pass      
+
+        # Completar...        
+
+        return(True, cycle)      
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
