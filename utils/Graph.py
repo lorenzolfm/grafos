@@ -164,8 +164,9 @@ class Graph:
 
     def subcycle_search(self, vertex, known):
         cycle = [vertex]
-        initial = vertex
-        pass
+        initial_vertex = vertex
+        vertex = None
+        pass      
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
