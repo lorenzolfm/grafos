@@ -11,6 +11,7 @@ class Graph:
         self._numberOfNodes, rawNodes, rawEdges = self._readFile(file)
 
         self._nodes = [None] * self._numberOfNodes
+        self._edges = []
         self._insertNodes(rawNodes)
         self._insertEdges(rawEdges)
 
@@ -93,6 +94,7 @@ class Graph:
 
             self.addEdge(sourceId, destinyId, weight)
             self._numberOfEdges += 1
+        print(self._edges)
 
 
     def addEdge(self, sourceId, destinyId, weight):
@@ -103,6 +105,10 @@ class Graph:
         destiny = self._nodes[destinyId - 1]
         adjNode = AdjNode(sourceId, weight)
         destiny.addAdjacent(adjNode)
+
+        self._edges.append(
+            (sourceId, destinyId)
+        )
 
 
     def breadthFirstSearch(self, vertex):
@@ -169,9 +175,9 @@ class Graph:
         initial_vertex = vertex
         vertex = None
 
-        # Completar...        
+        # Completar...
 
-        return(True, cycle)      
+        return(True, cycle)
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
