@@ -158,8 +158,8 @@ class Graph:
         knownEdges = {}
         for edge in self._edges:
             knownEdges[edge] = False
-        print(knownEdges)
 
+        # print(knownEdges)
         while True:
             vertex = choice(self._nodes)
             if vertex.getAdjList():
@@ -178,8 +178,21 @@ class Graph:
         cycle = [vertex]
         initial_vertex = vertex
 
-        # while True:
-            # pass
+        while True:
+            vertexId = vertex.getId()
+            myKnownEdges = []
+
+            for algo in knownEdges:
+                if vertexId in algo:
+                    myKnownEdges.append(knownEdges.get(algo))
+
+            if all(myKnownEdges) or myKnownEdges == []:
+                return (False, None)
+            else:
+                pass
+
+            break
+
 
 
 
