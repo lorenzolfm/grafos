@@ -1,7 +1,7 @@
 from queue import Queue
 from utils.Node import Node
 from utils.AdjNode import AdjNode
-from random import randint
+from random import choice
 
 class Graph:
     def __init__(self, file):
@@ -94,7 +94,6 @@ class Graph:
 
             self.addEdge(sourceId, destinyId, weight)
             self._numberOfEdges += 1
-        print(self._edges)
 
 
     def addEdge(self, sourceId, destinyId, weight):
@@ -156,12 +155,17 @@ class Graph:
             print(f"{i}: {level_list[i]}")
 
     def eulerian(self):
-        known = [False] * self.qtdArestas()
-        print(known)
-        vertex = randint(0, self.qtdVertices() - 1)
-        print(vertex)
+        knownEdges = {}
+        for edge in self._edges:
+            knownEdges[edge] = False
+        print(knownEdges)
 
-        r, cycle = self.subcycle_search(vertex, known)
+        while True:
+            vertex = choice(self._nodes)
+            if vertex.getAdjList():
+                break
+
+        r, cycle = self.subcycle_search(vertex, knownEdges)
 
         if not r:
             return (False, None)
@@ -170,10 +174,14 @@ class Graph:
         else:
             return (True, cycle)
 
-    def subcycle_search(self, vertex, known):
+    def subcycle_search(self, vertex, knownEdges):
         cycle = [vertex]
         initial_vertex = vertex
-        vertex = None
+
+        while True:
+            pass
+
+
 
         # Completar...
 
