@@ -178,8 +178,8 @@ class Graph:
         cycle = [vertex]
         initial_vertex = vertex
 
-        while True:
-            pass
+        # while True:
+            # pass
 
 
 
