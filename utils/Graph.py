@@ -170,24 +170,22 @@ class Graph:
         # Buscar Subciclo Euleriano
         r, cycle = self.subcycle_search(vertex, knownEdges)
 
-
-        r = False
-        # print(knownEdges)
-        if not r:
+        print(r)
+        print(cycle)
+        # print(knownEdges.values().count(False))
+        if r == False:
             # Não existe ciclo euleriano
-            return (False, None)
+            return False, None
         else:
             # Talvez de ruim v
-            if knownEdges.count(False):
+            if list(knownEdges.values()).count(False):
                 # Há arestas que não foram visitadas
-                return (False, None)
+                return False, None
             else:
-                return (True, cycle)
+                return True, cycle
 
     def subcycle_search(self, vertex, knownEdges):
         # Vamos tentar encontrar um ciclo
-        # print(knownEdges)
-        # print(vertex.getId())
         cycle = [vertex]
         initial_vertex = vertex
 
@@ -200,14 +198,11 @@ class Graph:
             ))
 
             # Não há arestas não visitadas adjacentes a vertex
-            if self._areAllEdgesVisited(unknowEdgesOfVertex):
-                # print("entrei")
-                return (False, None)
+            if not(unknowEdgesOfVertex):
+                return False, None
             else:
                 # Selecionar uma aresta de vertex que ainda não foi marcada como conhecida.
                 edge, _ = choice(list(unknowEdgesOfVertex.items()))
-                # print(vertex.getId())
-                # print(edge)
 
                 # Marcar como conhecida {u, v} = True
                 knownEdges[edge] = True
@@ -218,7 +213,6 @@ class Graph:
                 else:
                     vertex = self.getNode(edge[0])
 
-                # print(f"Novo vértice: {vertex.getId()}")
                 # Adiciona vertex ao final do ciclo
                 cycle.append(vertex)
 
@@ -227,10 +221,6 @@ class Graph:
 
         # Fechei um subciclo!
         # Preciso verificar se para o subciclo que eu achei, há algum vértice que possue arestas não marcadas
-        # print()
-        # print(knownEdges)
-        # print()
-        # print(cycle)
 
         # Para cada vértice
         for vertex in cycle:
@@ -238,21 +228,29 @@ class Graph:
                 lambda dictItem : (dictItem[0][0] == vertex.getId() or dictItem[0][1] == vertex.getId()) and dictItem[1] == False,
                 knownEdges.items()
             ))
-            # print(unknowEdgesOfVertex)
 
+            print(knownEdges)
             # Que tem pelo menos uma aresta não marcada.
             if unknowEdgesOfVertex:
-                r, OtherCycle = self.subcycle_search(vertex, knownEdges)
-                if not r:
-                    print("Não rola ciclo euleriano")
-                    return (False, None)
+                print("entrei")
+                r, otherCycle = self.subcycle_search(vertex, knownEdges)
 
+                if r == False:
+                    return False, None
+
+                indexOfVertex = cycle.index(vertex)
+                beforeIndex = cycle[:indexOfVertex:]
+                afterIndex = cycle[indexOfVertex + 1::]
+
+                print(indexOfVertex)
+                print(beforeIndex)
+                print(afterIndex)
+
+                cycle = beforeIndex.extend(otherCycle)
                 print(cycle)
-                print(otherCycle)
+                cycle = cycle.extend(afterIndex)
 
-
-
-        return(True, cycle)
+        return True, cycle
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
@@ -264,7 +262,8 @@ class Graph:
 
     def _areAllEdgesVisited(self, unknowEdgesOfVertex):
         # Se todas as arestas desse vértice forem conhecidas, retorne true
-        if all(unknowEdgesOfVertex.values()):
+        # print(list(unknowEdgesOfVertex.values()))
+        if all(list(unknowEdgesOfVertex.values())):
             return True
 
         return False
