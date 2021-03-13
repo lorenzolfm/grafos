@@ -155,24 +155,34 @@ class Graph:
             print(f"{i}: {level_list[i]}")
 
     def eulerian(self):
+        # Marcar todas as arestas como desconhecidas na lista Ce
         knownEdges = {}
         for edge in self._edges:
             knownEdges[edge] = False
 
-        # print(knownEdges)
+        # Selecionar um vértice arbritariamente
         while True:
             vertex = choice(self._nodes)
+            # O vértice escolhido deve estar conectado a uma aresta
             if vertex.getAdjList():
                 break
 
-        r, cycle = self.subcycle_search(vertex, knownEdges)
+        # Buscar Subciclo Euleriano
+        # r, cycle = self.subcycle_search(vertex, knownEdges)
 
+
+        r = True
+        knownEdges = [True for edge in knownEdges]
+        knownEdges[-1] = False
         if not r:
-            return (False, None)
-        elif cycle.count(False):
+            # Não existe ciclo euleriano
             return (False, None)
         else:
-            return (True, cycle)
+            if knownEdges.count(False):
+                # Há arestas que não foram visitadas
+                return (False, None)
+            else:
+                return (True, cycle)
 
     def subcycle_search(self, vertex, knownEdges):
         cycle = [vertex]
@@ -192,11 +202,6 @@ class Graph:
                 pass
 
             break
-
-
-
-
-        # Completar...
 
         return(True, cycle)
 
