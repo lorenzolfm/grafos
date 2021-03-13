@@ -185,8 +185,15 @@ class Graph:
                 return (True, cycle)
 
     def subcycle_search(self, vertex, knownEdges):
+        # Vamos tentar encontrar um ciclo
         cycle = [vertex]
         initial_vertex = vertex
+
+        # Enquanto initial_vertex != vertex
+        while True:
+
+
+
 
         while True:
             vertexId = vertex.getId()
@@ -201,8 +208,11 @@ class Graph:
             else:
                 pass
 
+
+
             break
 
+        # Verifica se ainda há ciclos que ainda não foram marcados
         return(True, cycle)
 
     def _getNumberOfNodesFrom(self, fileData):
