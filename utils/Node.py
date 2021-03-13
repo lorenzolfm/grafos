@@ -15,3 +15,6 @@ class Node:
 
     def getAdjList(self):
         return self.adjacents
+
+    def __repr__(self):
+        return str(self.idd)

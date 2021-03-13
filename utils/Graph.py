@@ -167,8 +167,6 @@ class Graph:
             if vertex.getAdjList():
                 break
 
-        print(vertex.getId())
-
         # Buscar Subciclo Euleriano
         r, cycle = self.subcycle_search(vertex, knownEdges)
 
@@ -188,54 +186,72 @@ class Graph:
 
     def subcycle_search(self, vertex, knownEdges):
         # Vamos tentar encontrar um ciclo
+        # print(knownEdges)
+        # print(vertex.getId())
         cycle = [vertex]
         initial_vertex = vertex
 
         # Enquanto initial_vertex != vertex
         while True:
+            # Filtrando o dicionario para as arestas desse vértice
+            unknowEdgesOfVertex = dict(filter(
+                lambda dictItem : (dictItem[0][0] == vertex.getId() or dictItem[0][1] == vertex.getId()) and dictItem[1] == False,
+                knownEdges.items()
+            ))
+
             # Não há arestas não visitadas adjacentes a vertex
-            if self._isThereAnUnkownEdge(vertex, knownEdges):
+            if self._areAllEdgesVisited(unknowEdgesOfVertex):
+                # print("entrei")
                 return (False, None)
             else:
                 # Selecionar uma aresta de vertex que ainda não foi marcada como conhecida.
-                # print(knownEdges)
-                listDict = knownEdges.items()
-                # print(list(listDict)[0][0][0])
-                filterDict = dict(filter(lambda dictItem : dictItem[0][0] == vertex.getId(), knownEdges.items()))
-                print(filterDict)
+                edge, _ = choice(list(unknowEdgesOfVertex.items()))
+                # print(vertex.getId())
+                # print(edge)
+
                 # Marcar como conhecida {u, v} = True
+                knownEdges[edge] = True
+
                 # Andar pela aresta
-                # vertex = outroVérticeDaAresta
+                if vertex.getId() == edge[0]:
+                    vertex = self.getNode(edge[1])
+                else:
+                    vertex = self.getNode(edge[0])
+
+                # print(f"Novo vértice: {vertex.getId()}")
                 # Adiciona vertex ao final do ciclo
-                # cycle.append(vertex)
+                cycle.append(vertex)
 
             if initial_vertex == vertex:
                 break
 
+        # Fechei um subciclo!
+        # Preciso verificar se para o subciclo que eu achei, há algum vértice que possue arestas não marcadas
+        # print()
+        # print(knownEdges)
+        # print()
+        # print(cycle)
+
+        # Para cada vértice
+        for vertex in cycle:
+            unknowEdgesOfVertex = dict(filter(
+                lambda dictItem : (dictItem[0][0] == vertex.getId() or dictItem[0][1] == vertex.getId()) and dictItem[1] == False,
+                knownEdges.items()
+            ))
+            # print(unknowEdgesOfVertex)
+
+            # Que tem pelo menos uma aresta não marcada.
+            if unknowEdgesOfVertex:
+                r, OtherCycle = self.subcycle_search(vertex, knownEdges)
+                if not r:
+                    print("Não rola ciclo euleriano")
+                    return (False, None)
+
+                print(cycle)
+                print(otherCycle)
 
 
 
-
-
-
-        while True:
-            vertexId = vertex.getId()
-            myKnownEdges = []
-
-            for algo in knownEdges:
-                if vertexId in algo:
-                    myKnownEdges.append(knownEdges.get(algo))
-
-            if all(myKnownEdges) or myKnownEdges == []:
-                return (False, None)
-            else:
-                pass
-
-
-
-            break
-
-        # Verifica se ainda há ciclos que ainda não foram marcados
         return(True, cycle)
 
     def _getNumberOfNodesFrom(self, fileData):
@@ -246,5 +262,9 @@ class Graph:
         for node in self._nodes:
             print(f"Vertice {node.getId()}: {node.getAdjList()}")
 
-    def _isThereAnUnkownEdge(self, vertex, knownEdges):
+    def _areAllEdgesVisited(self, unknowEdgesOfVertex):
+        # Se todas as arestas desse vértice forem conhecidas, retorne true
+        if all(unknowEdgesOfVertex.values()):
+            return True
+
         return False
