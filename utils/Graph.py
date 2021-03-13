@@ -155,7 +155,7 @@ class Graph:
             print(f"{i}: {level_list[i]}")
 
     def eulerian(self):
-        # Marcar todas as arestas como desconhecidas na lista Ce
+        # Marcar todas as arestas como desconhecidas
         knownEdges = {}
         for edge in self._edges:
             knownEdges[edge] = False
@@ -167,17 +167,19 @@ class Graph:
             if vertex.getAdjList():
                 break
 
+        print(vertex.getId())
+
         # Buscar Subciclo Euleriano
-        # r, cycle = self.subcycle_search(vertex, knownEdges)
+        r, cycle = self.subcycle_search(vertex, knownEdges)
 
 
-        r = True
-        knownEdges = [True for edge in knownEdges]
-        knownEdges[-1] = False
+        r = False
+        # print(knownEdges)
         if not r:
             # Não existe ciclo euleriano
             return (False, None)
         else:
+            # Talvez de ruim v
             if knownEdges.count(False):
                 # Há arestas que não foram visitadas
                 return (False, None)
@@ -191,6 +193,27 @@ class Graph:
 
         # Enquanto initial_vertex != vertex
         while True:
+            # Não há arestas não visitadas adjacentes a vertex
+            if self._isThereAnUnkownEdge(vertex, knownEdges):
+                return (False, None)
+            else:
+                # Selecionar uma aresta de vertex que ainda não foi marcada como conhecida.
+                # print(knownEdges)
+                listDict = knownEdges.items()
+                # print(list(listDict)[0][0][0])
+                filterDict = dict(filter(lambda dictItem : dictItem[0][0] == vertex.getId(), knownEdges.items()))
+                print(filterDict)
+                # Marcar como conhecida {u, v} = True
+                # Andar pela aresta
+                # vertex = outroVérticeDaAresta
+                # Adiciona vertex ao final do ciclo
+                # cycle.append(vertex)
+
+            if initial_vertex == vertex:
+                break
+
+
+
 
 
 
@@ -222,3 +245,6 @@ class Graph:
     def printGraph(self):
         for node in self._nodes:
             print(f"Vertice {node.getId()}: {node.getAdjList()}")
+
+    def _isThereAnUnkownEdge(self, vertex, knownEdges):
+        return False
