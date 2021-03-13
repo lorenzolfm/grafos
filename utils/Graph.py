@@ -170,9 +170,6 @@ class Graph:
         # Buscar Subciclo Euleriano
         r, cycle = self.subcycle_search(vertex, knownEdges)
 
-        print(r)
-        print(cycle)
-        # print(knownEdges.values().count(False))
         if r == False:
             # Não existe ciclo euleriano
             return False, None
@@ -222,33 +219,31 @@ class Graph:
         # Fechei um subciclo!
         # Preciso verificar se para o subciclo que eu achei, há algum vértice que possue arestas não marcadas
 
-        # Para cada vértice
+        # Para cada vértice que tem pelo menos uma aresta não marcada:
         for vertex in cycle:
             unknowEdgesOfVertex = dict(filter(
                 lambda dictItem : (dictItem[0][0] == vertex.getId() or dictItem[0][1] == vertex.getId()) and dictItem[1] == False,
                 knownEdges.items()
             ))
 
-            print(knownEdges)
             # Que tem pelo menos uma aresta não marcada.
             if unknowEdgesOfVertex:
-                print("entrei")
                 r, otherCycle = self.subcycle_search(vertex, knownEdges)
+                # print("")
+                # print("voltei da chamada recursiva")
+                # print(f"Vértice atual: {vertex.getId()}")
+                # print(f"Índice do vértice atual no ciclo: {cycle.index(vertex)}")
+                # print(f"Ciclo {cycle}")
+                # print(f"Subciclo: {otherCycle}")
+                # print("")
 
                 if r == False:
+                    print("r é falso")
                     return False, None
 
                 indexOfVertex = cycle.index(vertex)
-                beforeIndex = cycle[:indexOfVertex:]
-                afterIndex = cycle[indexOfVertex + 1::]
-
-                print(indexOfVertex)
-                print(beforeIndex)
-                print(afterIndex)
-
-                cycle = beforeIndex.extend(otherCycle)
-                print(cycle)
-                cycle = cycle.extend(afterIndex)
+                for i in range(len(otherCycle)):
+                    cycle.insert(i + indexOfVertex, otherCycle[i])
 
         return True, cycle
 
