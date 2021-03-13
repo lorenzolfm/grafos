@@ -155,37 +155,97 @@ class Graph:
             print(f"{i}: {level_list[i]}")
 
     def eulerian(self):
+        # Marcar todas as arestas como desconhecidas
         knownEdges = {}
         for edge in self._edges:
             knownEdges[edge] = False
-        print(knownEdges)
 
+        # Selecionar um vértice arbritariamente
         while True:
             vertex = choice(self._nodes)
+            # O vértice escolhido deve estar conectado a uma aresta
             if vertex.getAdjList():
                 break
 
+        # Buscar Subciclo Euleriano
         r, cycle = self.subcycle_search(vertex, knownEdges)
 
-        if not r:
-            return (False, None)
-        elif cycle.count(False):
-            return (False, None)
+        if r == False:
+            # Não existe ciclo euleriano
+            return False, None
         else:
-            return (True, cycle)
+            # Talvez de ruim v
+            if list(knownEdges.values()).count(False):
+                # Há arestas que não foram visitadas
+                return False, None
+            else:
+                return True, cycle
 
     def subcycle_search(self, vertex, knownEdges):
+        # Vamos tentar encontrar um ciclo
         cycle = [vertex]
         initial_vertex = vertex
 
+        # Enquanto initial_vertex != vertex
         while True:
-            pass
+            # Filtrando o dicionario para as arestas desse vértice
+            unknowEdgesOfVertex = dict(filter(
+                lambda dictItem : (dictItem[0][0] == vertex.getId() or dictItem[0][1] == vertex.getId()) and dictItem[1] == False,
+                knownEdges.items()
+            ))
 
+            # Não há arestas não visitadas adjacentes a vertex
+            if not(unknowEdgesOfVertex):
+                return False, None
+            else:
+                # Selecionar uma aresta de vertex que ainda não foi marcada como conhecida.
+                edge, _ = choice(list(unknowEdgesOfVertex.items()))
 
+                # Marcar como conhecida {u, v} = True
+                knownEdges[edge] = True
 
-        # Completar...
+                # Andar pela aresta
+                if vertex.getId() == edge[0]:
+                    vertex = self.getNode(edge[1])
+                else:
+                    vertex = self.getNode(edge[0])
 
-        return(True, cycle)
+                # Adiciona vertex ao final do ciclo
+                cycle.append(vertex)
+
+            if initial_vertex == vertex:
+                break
+
+        # Fechei um subciclo!
+        # Preciso verificar se para o subciclo que eu achei, há algum vértice que possue arestas não marcadas
+
+        # Para cada vértice que tem pelo menos uma aresta não marcada:
+        for vertex in cycle:
+            unknowEdgesOfVertex = dict(filter(
+                lambda dictItem : (dictItem[0][0] == vertex.getId() or dictItem[0][1] == vertex.getId()) and dictItem[1] == False,
+                knownEdges.items()
+            ))
+
+            # Que tem pelo menos uma aresta não marcada.
+            if unknowEdgesOfVertex:
+                r, otherCycle = self.subcycle_search(vertex, knownEdges)
+                # print("")
+                # print("voltei da chamada recursiva")
+                # print(f"Vértice atual: {vertex.getId()}")
+                # print(f"Índice do vértice atual no ciclo: {cycle.index(vertex)}")
+                # print(f"Ciclo {cycle}")
+                # print(f"Subciclo: {otherCycle}")
+                # print("")
+
+                if r == False:
+                    print("r é falso")
+                    return False, None
+
+                indexOfVertex = cycle.index(vertex)
+                for i in range(len(otherCycle)):
+                    cycle.insert(i + indexOfVertex, otherCycle[i])
+
+        return True, cycle
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
@@ -194,3 +254,11 @@ class Graph:
     def printGraph(self):
         for node in self._nodes:
             print(f"Vertice {node.getId()}: {node.getAdjList()}")
+
+    def _areAllEdgesVisited(self, unknowEdgesOfVertex):
+        # Se todas as arestas desse vértice forem conhecidas, retorne true
+        # print(list(unknowEdgesOfVertex.values()))
+        if all(list(unknowEdgesOfVertex.values())):
+            return True
+
+        return False
