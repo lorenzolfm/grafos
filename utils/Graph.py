@@ -106,7 +106,7 @@ class Graph:
         destiny.addAdjacent(adjNode)
 
         self._edges.append(
-            (sourceId, destinyId)
+            (sourceId, destinyId, weight)
         )
 
 
@@ -246,6 +246,53 @@ class Graph:
                     cycle.insert(i + indexOfVertex, otherCycle[i])
 
         return True, cycle
+
+    def bellman_ford(self, vertex):
+        # Inicialização
+
+        # Custo encontrado de vertex p/ todos os outros
+        distance = [float("inf")] * self._numberOfNodes
+        ancestral = [None] * self._numberOfNodes
+        distance[vertex.getId() - 1] = 0
+
+        # Caminho mínimo
+        for _ in range(self._numberOfNodes - 1):
+            for u, v, w in self._edges:
+                if distance[u - 1] != float("inf") and distance[u - 1] + w < distance[v - 1]:
+                    distance[v - 1] = distance[u - 1] + w
+                    ancestral[v - 1] = u
+                elif distance[v - 1] != float("inf") and distance[v - 1] + w < distance[u - 1]:
+                    distance[u - 1] = distance[v - 1] + w
+                    ancestral[u - 1] = v
+
+        # Detectar se há ciclo negativo
+        for u, v, w in self._edges:
+            if distance[u - 1] != float("inf") and distance[u - 1] + w < distance[v - 1]:
+                return (False, None, None)
+            elif distance[v - 1] != float("inf") and distance[v - 1] + w < distance[u - 1]:
+                return (False, None, None)
+
+        return (True, distance, ancestral)
+
+    def print_bellman_ford(self, vertex):
+        flag, distance, ancestral = self.bellman_ford(vertex)
+
+        if flag == False:
+            print("Há ciclo negativo")
+            return
+
+        for i in range(self._numberOfNodes):
+             aux = i + 1
+             way = [aux]
+             while aux != None:
+                 aux = ancestral[aux - 1]
+                 if aux == None:
+                    pass
+                 else:
+                     way.insert(0, aux)
+
+             print(f"{i+1}: {way}; d={distance[i]}")
+
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
