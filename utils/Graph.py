@@ -300,6 +300,7 @@ class Graph:
         for u in range(self._numberOfNodes):
             for v in range(self._numberOfNodes):
                 matrix[u][v] = min(matrix[u][v], matrix[u][k] + matrix[k][v])
+            k += 1
 
         return matrix     
 
