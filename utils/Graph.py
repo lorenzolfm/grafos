@@ -248,77 +248,90 @@ class Graph:
         return True, cycle
 
     def bellman_ford(self, vertex):
-<<<<<<< HEAD
-=======
         # Inicialização
 
         # Custo encontrado de vertex p/ todos os outros
->>>>>>> e742f991a859b3474fec2a8d56d90aa5a62bd23e
         distance = [float("inf")] * self._numberOfNodes
         ancestral = [None] * self._numberOfNodes
         distance[vertex.getId() - 1] = 0
 
+        # Caminho mínimo
         for _ in range(self._numberOfNodes - 1):
             for u, v, w in self._edges:
-                if u < vertex.getId():
-                    u, v = v, u
                 if distance[u - 1] != float("inf") and distance[u - 1] + w < distance[v - 1]:
                     distance[v - 1] = distance[u - 1] + w
                     ancestral[v - 1] = u
-        print(distance)
-        print(ancestral)
+                elif distance[v - 1] != float("inf") and distance[v - 1] + w < distance[u - 1]:
+                    distance[u - 1] = distance[v - 1] + w
+                    ancestral[u - 1] = v
+
+        # Detectar se há ciclo negativo
+        for u, v, w in self._edges:
+            if distance[u - 1] != float("inf") and distance[u - 1] + w < distance[v - 1]:
+                return (False, None, None)
+            elif distance[v - 1] != float("inf") and distance[v - 1] + w < distance[u - 1]:
+                return (False, None, None)
 
         return (True, distance, ancestral)
 
-    def _weight(self, edge):
-        return edge[2]
-
     def print_bellman_ford(self, vertex):
         flag, distance, ancestral = self.bellman_ford(vertex)
-<<<<<<< HEAD
-        for i in range(self._numberOfNodes):
-            aux = ancestral[i]
-            way = [aux]
-            while aux != None:
-                aux = ancestral[aux - 1]
-                way.insert(0, aux)
 
-            print(f"{i+1}: {way}; d={distance[i]}")
+        if flag == False:
+            print("Há ciclo negativo")
+            return
+
+        for i in range(self._numberOfNodes):
+             aux = i + 1
+             way = [aux]
+             while aux != None:
+                 aux = ancestral[aux - 1]
+                 if aux == None:
+                    pass
+                 else:
+                     way.insert(0, aux)
+
+             print(f"{i+1}: {way}; d={distance[i]}")
 
     def floyd_warshall(self):
         matrix = []
+        edgesWithoutWeight = [(edge[0], edge[1]) for edge in self._edges]
+
+        matrix = [[None for x in range(self._numberOfNodes)] for y in range(self._numberOfNodes)]
+
         for i in range(self._numberOfNodes):
-            matrix.append([])
-            for j in range(self._numberOfNodes):
+            for j in range(i, self._numberOfNodes):
                 if i == j:
-                    matrix[i].append(0)
+                    matrix[i][j] = 0
                 else:
-                    # alterar para peso de cada arco
-                    matrix[i].append(999)
+                    u = i + 1
+                    v = j + 1
+                    edge = (u, v)
+                    if edge in edgesWithoutWeight:
+                        index = edgesWithoutWeight.index(edge)
+                        matrix[i][j] = self._edges[index][2]
+                        matrix[j][i] = self._edges[index][2]
+                    else:
+                        matrix[i][j] = float('inf')
+                        matrix[j][i] = float('inf')
 
         k = 0
-        for u in range(self._numberOfNodes):
-            for v in range(self._numberOfNodes):
-                matrix[u][v] = min(matrix[u][v], matrix[u][k] + matrix[k][v])
-            k += 1
 
-        return matrix     
+        for i in range(len(matrix)):
+            print(f"{i + 1}: {matrix[i]}")
+        print()
+
+        for k in range(self._numberOfNodes):
+            for u in range(self._numberOfNodes):
+                for v in range(self._numberOfNodes):
+                    matrix[u][v] = min(matrix[u][v], matrix[u][k] + matrix[k][v])
+
+        return matrix
 
     def print_floyd_warshall(self):
         matrix = self.floyd_warshall()
         for i in range(len(matrix)):
-            print(f"{i+1}: {matrix[i]}")
-=======
-        # for i in range(self._numberOfNodes):
-            # aux = ancestral[i]
-            # way = [aux]
-            # while aux != None:
-                # aux = ancestral[aux - 1]
-                # way.insert(0, aux)
-
-            # print(f"{i+1}: {way}; d={distance[i]}")
-
->>>>>>> e742f991a859b3474fec2a8d56d90aa5a62bd23e
+            print(f"{i + 1}: {matrix[i]}")
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
