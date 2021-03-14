@@ -247,6 +247,38 @@ class Graph:
 
         return True, cycle
 
+    def bellman_ford(self, vertex):
+        distance = [999] * self._numberOfNodes
+        ancestral = [None] * self._numberOfNodes
+        distance[vertex - 1] = 0
+        print(distance)
+
+        """for i in range(self._numberOfNodes - 1):
+            # talvez seja necessário adicionar "-1"
+            for j in range(self._numberOfEdges):
+                if distance[destiny_vertex] > distance[origin_vertex] + weight:
+                    distance[destiny_vertex] = distance[origin_vertex] + weight
+                    ancestral[destiny_vertex] = origin_vertex
+
+        for j in range(self._numberOfEdges):
+            if distance[destiny_vertex] > distance[origin_vertex] + weight:
+                return (False, None, None)"""
+
+        return (True, distance, ancestral)
+
+
+    def print_bellman_ford(self, vertex):
+        flag, distance, ancestral = self.bellman_ford(vertex)
+        for i in range(self._numberOfNodes):
+            aux = ancestral[i]
+            way = [aux]
+            while aux != None:
+                aux = ancestral[aux - 1]
+                way.insert(0, aux)
+
+            print(f"{i+1}: {way}; d={distance[i]}")
+        
+
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
 
