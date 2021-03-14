@@ -248,7 +248,7 @@ class Graph:
         return True, cycle
 
     def bellman_ford(self, vertex):
-        distance = [999] * self._numberOfNodes
+        distance = [float("inf")] * self._numberOfNodes
         ancestral = [None] * self._numberOfNodes
         distance[vertex - 1] = 0
         print(distance)
@@ -277,7 +277,29 @@ class Graph:
                 way.insert(0, aux)
 
             print(f"{i+1}: {way}; d={distance[i]}")
-        
+
+    def floyd_warshall(self):
+        matrix = []
+        for i in range(self._numberOfNodes):
+            matrix.append([])
+            for j in range(self._numberOfNodes):
+                if i == j:
+                    matrix[i].append(0)
+                else:
+                    # alterar para peso de cada arco
+                    matrix[i].append(999)
+
+        k = 0
+        for u in range(self._numberOfNodes):
+            for v in range(self._numberOfNodes):
+                matrix[u][v] = min(matrix[u][v], matrix[u][k] + matrix[k][v])
+
+        return matrix     
+
+    def print_floyd_warshall(self):
+        matrix = self.floyd_warshall()
+        for i in range(len(matrix)):
+            print(f"{i+1}: {matrix[i]}")
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
