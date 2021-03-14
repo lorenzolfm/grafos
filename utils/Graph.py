@@ -255,36 +255,15 @@ class Graph:
         ancestral = [None] * self._numberOfNodes
         distance[vertex.getId() - 1] = 0
 
-        print(distance)
-
         for _ in range(self._numberOfNodes - 1):
             for u, v, w in self._edges:
-                # print(u, v, w)
-                # print(distance[u - 1], distance[v - 1])
+                if u < vertex.getId():
+                    u, v = v, u
                 if distance[u - 1] != float("inf") and distance[u - 1] + w < distance[v - 1]:
                     distance[v - 1] = distance[u - 1] + w
-
+                    ancestral[v - 1] = u
         print(distance)
-        # for vertex in self._nodes[1::]:
-            # for edge in self._edges:
-                # v = self.getNode(edge[0])
-                # u = self.getNode(edge[1])
-                # Dv = distance[v.getId() - 1]
-                # Du = distance[u.getId() - 1]
-                # weight = self._weight(edge)
-
-                # print(f"edge: {edge}")
-                # print(f"v: {v}")
-                # print(f"u: {u}")
-                # print(f"Dv: {Dv}")
-                # print(f"Du: {Du}")
-                # print(f"Weight: {weight}")
-                # print(f"Dv > Du + w(u, v)? {Dv} > {Du} + {weight}")
-                # if Dv > Du + weight:
-                    # print("entrei")
-                    # Dv = Du + weight
-                    # A[v.getId(v) - 1] = u.getId()
-
+        print(ancestral)
 
         return (True, distance, ancestral)
 
