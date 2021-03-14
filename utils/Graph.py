@@ -293,6 +293,39 @@ class Graph:
 
              print(f"{i+1}: {way}; d={distance[i]}")
 
+    def floyd_warshall(self):
+        matrix = []
+        edgesWithoutWeight = [(edge[0], edge[1]) for edge in self._edges]
+
+        matrix = [[None for x in range(self._numberOfNodes)] for y in range(self._numberOfNodes)]
+
+        for i in range(self._numberOfNodes):
+            for j in range(i, self._numberOfNodes):
+                if i == j:
+                    matrix[i][j] = 0
+                else:
+                    u = i + 1
+                    v = j + 1
+                    edge = (u, v)
+                    if edge in edgesWithoutWeight:
+                        index = edgesWithoutWeight.index(edge)
+                        matrix[i][j] = self._edges[index][2]
+                        matrix[j][i] = self._edges[index][2]
+                    else:
+                        matrix[i][j] = float('inf')
+                        matrix[j][i] = float('inf')
+
+        for k in range(self._numberOfNodes):
+            for u in range(self._numberOfNodes):
+                for v in range(self._numberOfNodes):
+                    matrix[u][v] = min(matrix[u][v], matrix[u][k] + matrix[k][v])
+
+        return matrix
+
+    def print_floyd_warshall(self):
+        matrix = self.floyd_warshall()
+        for i in range(len(matrix)):
+            print(f"{i + 1}: {matrix[i]}")
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
