@@ -106,7 +106,7 @@ class Graph:
         destiny.addAdjacent(adjNode)
 
         self._edges.append(
-            (sourceId, destinyId)
+            (sourceId, destinyId, weight)
         )
 
 
@@ -248,36 +248,60 @@ class Graph:
         return True, cycle
 
     def bellman_ford(self, vertex):
-        distance = [999] * self._numberOfNodes
+        # Inicialização
+
+        # Custo encontrado de vertex p/ todos os outros
+        distance = [float("inf")] * self._numberOfNodes
         ancestral = [None] * self._numberOfNodes
-        distance[vertex - 1] = 0
+        distance[vertex.getId() - 1] = 0
+
         print(distance)
 
-        """for i in range(self._numberOfNodes - 1):
-            # talvez seja necessário adicionar "-1"
-            for j in range(self._numberOfEdges):
-                if distance[destiny_vertex] > distance[origin_vertex] + weight:
-                    distance[destiny_vertex] = distance[origin_vertex] + weight
-                    ancestral[destiny_vertex] = origin_vertex
+        for _ in range(self._numberOfNodes - 1):
+            for u, v, w in self._edges:
+                # print(u, v, w)
+                # print(distance[u - 1], distance[v - 1])
+                if distance[u - 1] != float("inf") and distance[u - 1] + w < distance[v - 1]:
+                    distance[v - 1] = distance[u - 1] + w
 
-        for j in range(self._numberOfEdges):
-            if distance[destiny_vertex] > distance[origin_vertex] + weight:
-                return (False, None, None)"""
+        print(distance)
+        # for vertex in self._nodes[1::]:
+            # for edge in self._edges:
+                # v = self.getNode(edge[0])
+                # u = self.getNode(edge[1])
+                # Dv = distance[v.getId() - 1]
+                # Du = distance[u.getId() - 1]
+                # weight = self._weight(edge)
+
+                # print(f"edge: {edge}")
+                # print(f"v: {v}")
+                # print(f"u: {u}")
+                # print(f"Dv: {Dv}")
+                # print(f"Du: {Du}")
+                # print(f"Weight: {weight}")
+                # print(f"Dv > Du + w(u, v)? {Dv} > {Du} + {weight}")
+                # if Dv > Du + weight:
+                    # print("entrei")
+                    # Dv = Du + weight
+                    # A[v.getId(v) - 1] = u.getId()
+
 
         return (True, distance, ancestral)
 
+    def _weight(self, edge):
+        return edge[2]
 
     def print_bellman_ford(self, vertex):
         flag, distance, ancestral = self.bellman_ford(vertex)
-        for i in range(self._numberOfNodes):
-            aux = ancestral[i]
-            way = [aux]
-            while aux != None:
-                aux = ancestral[aux - 1]
-                way.insert(0, aux)
+        # for i in range(self._numberOfNodes):
+            # aux = ancestral[i]
+            # way = [aux]
+            # while aux != None:
+                # aux = ancestral[aux - 1]
+                # way.insert(0, aux)
 
-            print(f"{i+1}: {way}; d={distance[i]}")
-        
+            # print(f"{i+1}: {way}; d={distance[i]}")
+
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
