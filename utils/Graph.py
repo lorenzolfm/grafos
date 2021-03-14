@@ -257,11 +257,14 @@ class Graph:
 
         for _ in range(self._numberOfNodes - 1):
             for u, v, w in self._edges:
-                if u < vertex.getId():
-                    u, v = v, u
+                #if u < vertex.getId():
+                 #   u, v = v, u
                 if distance[u - 1] != float("inf") and distance[u - 1] + w < distance[v - 1]:
                     distance[v - 1] = distance[u - 1] + w
                     ancestral[v - 1] = u
+                elif distance[v - 1] != float("inf") and distance[v - 1] + w < distance[u - 1]:
+                    distance[u - 1] = distance[v - 1] + w
+                    ancestral[u - 1] = v
         print(distance)
         print(ancestral)
 
