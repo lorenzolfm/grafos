@@ -274,22 +274,24 @@ class Graph:
 
         return (True, distance, ancestral)
 
-    # def _weight(self, edge):
-        # return edge[2]
-
     def print_bellman_ford(self, vertex):
         flag, distance, ancestral = self.bellman_ford(vertex)
+
         if flag == False:
             print("Há ciclo negativo")
             return
-        for i in range(self._numberOfNodes):
-            aux = ancestral[i]
-            way = [aux]
-            while aux != None:
-                aux = ancestral[aux - 1]
-                way.insert(0, aux)
 
-            print(f"{i+1}: {way}; d={distance[i]}")
+        for i in range(self._numberOfNodes):
+             aux = i + 1
+             way = [aux]
+             while aux != None:
+                 aux = ancestral[aux - 1]
+                 if aux == None:
+                    pass
+                 else:
+                     way.insert(0, aux)
+
+             print(f"{i+1}: {way}; d={distance[i]}")
 
 
     def _getNumberOfNodesFrom(self, fileData):
