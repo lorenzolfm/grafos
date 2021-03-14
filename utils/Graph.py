@@ -106,7 +106,7 @@ class Graph:
         destiny.addAdjacent(adjNode)
 
         self._edges.append(
-            (sourceId, destinyId)
+            (sourceId, destinyId, weight)
         )
 
 
@@ -248,27 +248,34 @@ class Graph:
         return True, cycle
 
     def bellman_ford(self, vertex):
+<<<<<<< HEAD
+=======
+        # Inicialização
+
+        # Custo encontrado de vertex p/ todos os outros
+>>>>>>> e742f991a859b3474fec2a8d56d90aa5a62bd23e
         distance = [float("inf")] * self._numberOfNodes
         ancestral = [None] * self._numberOfNodes
-        distance[vertex - 1] = 0
+        distance[vertex.getId() - 1] = 0
+
+        for _ in range(self._numberOfNodes - 1):
+            for u, v, w in self._edges:
+                if u < vertex.getId():
+                    u, v = v, u
+                if distance[u - 1] != float("inf") and distance[u - 1] + w < distance[v - 1]:
+                    distance[v - 1] = distance[u - 1] + w
+                    ancestral[v - 1] = u
         print(distance)
-
-        """for i in range(self._numberOfNodes - 1):
-            # talvez seja necessário adicionar "-1"
-            for j in range(self._numberOfEdges):
-                if distance[destiny_vertex] > distance[origin_vertex] + weight:
-                    distance[destiny_vertex] = distance[origin_vertex] + weight
-                    ancestral[destiny_vertex] = origin_vertex
-
-        for j in range(self._numberOfEdges):
-            if distance[destiny_vertex] > distance[origin_vertex] + weight:
-                return (False, None, None)"""
+        print(ancestral)
 
         return (True, distance, ancestral)
 
+    def _weight(self, edge):
+        return edge[2]
 
     def print_bellman_ford(self, vertex):
         flag, distance, ancestral = self.bellman_ford(vertex)
+<<<<<<< HEAD
         for i in range(self._numberOfNodes):
             aux = ancestral[i]
             way = [aux]
@@ -300,6 +307,17 @@ class Graph:
         matrix = self.floyd_warshall()
         for i in range(len(matrix)):
             print(f"{i+1}: {matrix[i]}")
+=======
+        # for i in range(self._numberOfNodes):
+            # aux = ancestral[i]
+            # way = [aux]
+            # while aux != None:
+                # aux = ancestral[aux - 1]
+                # way.insert(0, aux)
+
+            # print(f"{i+1}: {way}; d={distance[i]}")
+
+>>>>>>> e742f991a859b3474fec2a8d56d90aa5a62bd23e
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
