@@ -315,16 +315,10 @@ class Graph:
                         matrix[i][j] = float('inf')
                         matrix[j][i] = float('inf')
 
-        k = 0
-
-        for i in range(len(matrix)):
-            print(f"{i + 1}: {matrix[i]}")
-        print()
-
-        for u in range(self._numberOfNodes):
-            for v in range(self._numberOfNodes):
-                matrix[u][v] = min(matrix[u][v], matrix[u][k] + matrix[k][v])
-            k += 1
+        for k in range(self._numberOfNodes):
+            for u in range(self._numberOfNodes):
+                for v in range(self._numberOfNodes):
+                    matrix[u][v] = min(matrix[u][v], matrix[u][k] + matrix[k][v])
 
         return matrix
 
