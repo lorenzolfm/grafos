@@ -1,10 +1,14 @@
+import sys
 from utils.Graph import Graph
 
-graph = Graph('./assets/exemploEuler.net')
-r, cycle = graph.eulerian()
-
-if r:
-    print(1)
-    print(cycle)
-else:
-    print(0)
+try:
+    path = str(sys.argv[1])
+    graph = Graph(path)
+    r, cycle = graph.eulerian()
+    if r:
+        print(1)
+        print(*cycle, sep = ",")
+    else:
+        print(0)
+except FileNotFoundError:
+    print("Não achei esse arquivo")

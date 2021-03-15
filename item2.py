@@ -1,9 +1,10 @@
+import sys
 from utils.Graph import Graph
 
-graph = Graph('./assets/agm_tiny.net')
-graph.level_list(graph.getNode(1))
-
-print()
-
-graph = Graph('./assets/fln_pequena.net')
-graph.level_list(graph.getNode(1))
+try:
+    path = str(sys.argv[1])
+    index = int(sys.argv[2])
+    graph = Graph(path)
+    graph.level_list(graph.getNode(index))
+except FileNotFoundError:
+    print("Não achei esse arquivo")

@@ -1,4 +1,9 @@
+import sys
 from utils.Graph import Graph
 
-graph = Graph('./assets/agm_tiny.net')
-graph.print_floyd_warshall()
+try:
+    path = str(sys.argv[1])
+    graph = Graph(path)
+    graph.print_floyd_warshall()
+except FileNotFoundError:
+    print("Não achei esse arquivo")
