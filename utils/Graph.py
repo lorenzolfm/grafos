@@ -175,7 +175,6 @@ class Graph:
             # Não existe ciclo euleriano
             return False, None
         else:
-            # Talvez de ruim v
             if list(knownEdges.values()).count(False):
                 # Há arestas que não foram visitadas
                 return False, None
