@@ -319,7 +319,8 @@ class Graph:
     def print_floyd_warshall(self):
         matrix = self.floyd_warshall()
         for i in range(len(matrix)):
-            print(f"{i + 1}: {matrix[i]}")
+            string = str(matrix[i])[1:-1].replace(" ", "")
+            print(f"{i + 1}:{string}")
 
     def _getNumberOfNodesFrom(self, fileData):
         return int(fileData[0].split()[1])
