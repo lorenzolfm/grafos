@@ -332,7 +332,6 @@ class Graph:
 
     def _areAllEdgesVisited(self, unknowEdgesOfVertex):
         # Se todas as arestas desse vértice forem conhecidas, retorne true
-        # print(list(unknowEdgesOfVertex.values()))
         if all(list(unknowEdgesOfVertex.values())):
             return True
 
