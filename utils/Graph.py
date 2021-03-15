@@ -152,7 +152,8 @@ class Graph:
             level_list[edge_distance[i]].append(i + 1)
 
         for i in range(size):
-            print(f"{i}: {level_list[i]}")
+            string = str(level_list[i])[1:-1].replace(" ", "")
+            print(f"{i}: {string}")
 
     def eulerian(self):
         # Marcar todas as arestas como desconhecidas
