@@ -230,16 +230,8 @@ class Graph:
             # Que tem pelo menos uma aresta não marcada.
             if unknowEdgesOfVertex:
                 r, otherCycle = self.subcycle_search(vertex, knownEdges)
-                # print("")
-                # print("voltei da chamada recursiva")
-                # print(f"Vértice atual: {vertex.getId()}")
-                # print(f"Índice do vértice atual no ciclo: {cycle.index(vertex)}")
-                # print(f"Ciclo {cycle}")
-                # print(f"Subciclo: {otherCycle}")
-                # print("")
 
                 if r == False:
-                    print("r é falso")
                     return False, None
 
                 indexOfVertex = cycle.index(vertex)
@@ -291,8 +283,9 @@ class Graph:
                     pass
                  else:
                      way.insert(0, aux)
+                     string = str(way)[1:-1].replace(" ", "")
 
-             print(f"{i+1}: {way}; d={distance[i]}")
+             print(f"{i+1}: {string}; d={distance[i]}")
 
     def floyd_warshall(self):
         matrix = []
