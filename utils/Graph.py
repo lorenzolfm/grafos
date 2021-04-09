@@ -3,6 +3,7 @@ from utils.Node import Node
 from utils.AdjNode import AdjNode
 from random import choice
 
+
 class Graph:
     def __init__(self, file):
         self._numberOfNodes = 0
@@ -83,7 +84,6 @@ class Graph:
 
             self._nodes[node.getId() - 1] = node
 
-
     def _insertEdges(self, rawEdges):
         for rawEdge in rawEdges:
             rawEdge = rawEdge.split()
@@ -95,20 +95,18 @@ class Graph:
             self.addEdge(sourceId, destinyId, weight)
             self._numberOfEdges += 1
 
-
     def addEdge(self, sourceId, destinyId, weight):
         source = self._nodes[sourceId - 1]
         adjNode = AdjNode(destinyId, weight)
         source.addAdjacent(adjNode)
 
-        destiny = self._nodes[destinyId - 1]
+        '''destiny = self._nodes[destinyId - 1]
         adjNode = AdjNode(sourceId, weight)
-        destiny.addAdjacent(adjNode)
+        destiny.addAdjacent(adjNode)'''
 
         self._edges.append(
             (sourceId, destinyId, weight)
         )
-
 
     def breadthFirstSearch(self, vertex):
         # Configurando vetores dos vértices
@@ -274,17 +272,17 @@ class Graph:
             return
 
         for i in range(self._numberOfNodes):
-             aux = i + 1
-             way = [aux]
-             while aux != None:
-                 aux = ancestral[aux - 1]
-                 if aux == None:
+            aux = i + 1
+            way = [aux]
+            while aux != None:
+                aux = ancestral[aux - 1]
+                if aux == None:
                     pass
-                 else:
-                     way.insert(0, aux)
-                     string = str(way)[1:-1].replace(" ", "")
+                else:
+                    way.insert(0, aux)
+                    string = str(way)[1:-1].replace(" ", "")
 
-             print(f"{i+1}: {string}; d={distance[i]}")
+            print(f"{i+1}: {string}; d={distance[i]}")
 
     def floyd_warshall(self):
         matrix = []
@@ -341,9 +339,9 @@ class Graph:
         # Cv
         known = [False] * self._numberOfNodes
         # Tv
-        beginTime = [('inf')] * self._numberOfNodes
+        beginTime = [float('inf')] * self._numberOfNodes
         # Fv
-        endTime = [('inf')] * self._numberOfNodes
+        endTime = [float('inf')] * self._numberOfNodes
         # Av
         ancestral = [None] * self._numberOfNodes
 
@@ -351,14 +349,28 @@ class Graph:
 
         topologicalOrder = []
 
-        for i in range(len(self._nodes)):
-            if not(known[i]) == False:
-                # Chamar DFS-Visit-OT()
-                pass
+        for node in self._nodes:
+            if not(known[node.getId()-1]):
+                self.dfsVisitOT(node, known, beginTime, endTime, time, topologicalOrder)
+
         return topologicalOrder
 
-    def dfsVisitOT(self, knowNodes, i, tempo, endTime):
-        knowNodes[i] = True
-        tempo += 1
-        endTime[i] = tempo
-        pass
+    def dfsVisitOT(self, vertex, knowNodes, beginTime, endTime, time, topologicalOrder):
+        knowNodes[vertex.getId()-1] = True
+        time += 1
+        beginTime[vertex.getId()-1] = time
+
+        for i in vertex.getAdjList():
+            if not knowNodes[i.getId()-1]:
+                self.dfsVisitOT(self._nodes[i.getId()-1], knowNodes, beginTime, endTime, time, topologicalOrder)
+
+        time += 1
+        endTime[vertex.getId()-1] = time
+        topologicalOrder.insert(0, vertex.getData())
+
+    def print_ordering(self):
+        print(self.topological_ordering())
+
+
+
+
