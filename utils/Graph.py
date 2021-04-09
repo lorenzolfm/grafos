@@ -329,9 +329,36 @@ class Graph:
         for node in self._nodes:
             print(f"Vertice {node.getId()}: {node.getAdjList()}")
 
+
     def _areAllEdgesVisited(self, unknowEdgesOfVertex):
         # Se todas as arestas desse vértice forem conhecidas, retorne true
         if all(list(unknowEdgesOfVertex.values())):
             return True
 
         return False
+
+    def topological_ordering(self):
+        # Cv
+        known = [False] * self._numberOfNodes
+        # Tv
+        beginTime = [('inf')] * self._numberOfNodes
+        # Fv
+        endTime = [('inf')] * self._numberOfNodes
+        # Av
+        ancestral = [None] * self._numberOfNodes
+
+        time = 0
+
+        topologicalOrder = []
+
+        for i in range(len(self._nodes)):
+            if not(known[i]) == False:
+                # Chamar DFS-Visit-OT()
+                pass
+        return topologicalOrder
+
+    def dfsVisitOT(self, knowNodes, i, tempo, endTime):
+        knowNodes[i] = True
+        tempo += 1
+        endTime[i] = tempo
+        pass
