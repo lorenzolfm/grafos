@@ -376,3 +376,81 @@ class Graph:
 
     def print_ordering(self):
         print(self.topological_ordering())
+
+
+    def stronglyConnectedComponents(self,):
+        know, beginTime, archs, endTime = self.dfs()
+
+        transposedGraph = Graph('assets/cfc.net', isDirected = True)
+        transposedGraph._edges = self.invertArchs()
+
+        endTimeDict = {}
+        for i in range(len(self._nodes)):
+            endTimeDict[self._nodes[i]] = endTime[i]
+
+        order = dict(sorted(endTimeDict.items(), key=lambda item: item[1], reverse = True))
+
+        Ct, Tt, At, Ft = transposedGraph.dfs_adapted(list(order.keys()))
+
+        return At
+
+    def dfs(self):
+        # Cv
+        known = [False] * self._numberOfNodes
+        # Tv
+        beginTime = [float('inf')] * self._numberOfNodes
+        # Fv
+        endTime = [float('inf')] * self._numberOfNodes
+
+        ancestral = [None] * self._numberOfNodes
+
+        time = 0
+
+        for i in self._nodes:
+            if not known[i.getId() - 1]:
+                time = self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
+
+        return known, beginTime, ancestral, endTime
+
+
+    def dfsVisit(self, vertex, known, beginTime, ancestral, endTime, time):
+        known[vertex.getId() - 1] = True
+        time += 1
+        beginTime[vertex.getId() - 1] = time
+
+        for i in self._nodes[vertex.getId() - 1].getAdjList():
+            if not known[i.getId()-1]:
+                ancestral[i.getId() - 1] = vertex
+                time = self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
+
+        time += 1
+        endTime[vertex.getId() - 1] = time
+
+        return time
+
+
+    def dfs_adapted(self, order):
+        # Cv
+        known = [False] * self._numberOfNodes
+        # Tv
+        beginTime = [float('inf')] * self._numberOfNodes
+        # Fv
+        endTime = [float('inf')] * self._numberOfNodes
+        # Av
+        ancestral = [None] * self._numberOfNodes
+
+        time = 0
+
+        for i in order:
+            if not known[i.getId() - 1]:
+                self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
+
+        return known, beginTime, ancestral, endTime
+
+
+    def invertArchs(self):
+        invertedArchs = [(y, x, z) for (x, y, z) in self._edges]
+        return invertedArchs
+
+    def printCFC(self):
+        print(self.stronglyConnectedComponents())
