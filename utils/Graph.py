@@ -335,6 +335,8 @@ class Graph:
 
         return False
 
+
+
     def topological_ordering(self):
         # Cv
         known = [False] * self._numberOfNodes
@@ -342,24 +344,27 @@ class Graph:
         beginTime = [float('inf')] * self._numberOfNodes
         # Fv
         endTime = [float('inf')] * self._numberOfNodes
-        # Av
-        ancestral = [None] * self._numberOfNodes
 
+        # Configurando tempo de início
         time = 0
 
+        # Criando lista com os vértices ordenados topologicamente
         topologicalOrder = []
 
         for node in self._nodes:
-            if not(known[node.getId()-1]):
+            if not(known[node.getId() -1 ]):
                 self.dfsVisitOT(node, known, beginTime, endTime, time, topologicalOrder)
 
         return topologicalOrder
 
     def dfsVisitOT(self, vertex, knowNodes, beginTime, endTime, time, topologicalOrder):
         knowNodes[vertex.getId()-1] = True
+
         time += 1
+
         beginTime[vertex.getId()-1] = time
 
+        print(vertex.getAdjList())
         for i in vertex.getAdjList():
             if not knowNodes[i.getId()-1]:
                 self.dfsVisitOT(self._nodes[i.getId()-1], knowNodes, beginTime, endTime, time, topologicalOrder)
@@ -370,7 +375,3 @@ class Graph:
 
     def print_ordering(self):
         print(self.topological_ordering())
-
-
-
-
