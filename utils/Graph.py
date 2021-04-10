@@ -5,9 +5,10 @@ from random import choice
 
 
 class Graph:
-    def __init__(self, file):
+    def __init__(self, file, isDirected):
         self._numberOfNodes = 0
         self._numberOfEdges = 0
+        self.isDirected = isDirected
 
         self._numberOfNodes, rawNodes, rawEdges = self._readFile(file)
 
@@ -100,9 +101,10 @@ class Graph:
         adjNode = AdjNode(destinyId, weight)
         source.addAdjacent(adjNode)
 
-        '''destiny = self._nodes[destinyId - 1]
-        adjNode = AdjNode(sourceId, weight)
-        destiny.addAdjacent(adjNode)'''
+        if not(self.isDirected):
+            destiny = self._nodes[destinyId - 1]
+            adjNode = AdjNode(sourceId, weight)
+            destiny.addAdjacent(adjNode)
 
         self._edges.append(
             (sourceId, destinyId, weight)
@@ -352,7 +354,7 @@ class Graph:
         topologicalOrder = []
 
         for node in self._nodes:
-            if not(known[node.getId() -1 ]):
+            if not(known[node.getId() -1]):
                 self.dfsVisitOT(node, known, beginTime, endTime, time, topologicalOrder)
 
         return topologicalOrder
@@ -364,7 +366,6 @@ class Graph:
 
         beginTime[vertex.getId()-1] = time
 
-        print(vertex.getAdjList())
         for i in vertex.getAdjList():
             if not knowNodes[i.getId()-1]:
                 self.dfsVisitOT(self._nodes[i.getId()-1], knowNodes, beginTime, endTime, time, topologicalOrder)

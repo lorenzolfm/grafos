@@ -1,4 +1,4 @@
 from utils.Graph import Graph
 
-graph = Graph('assets/ex_aula.net')
+graph = Graph('assets/manha.net', isDirected = True)
 graph.print_ordering()
