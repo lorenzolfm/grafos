@@ -458,14 +458,6 @@ class Graph:
         for lista in output:
             print(*lista, sep=",")
 
-
-    def appendToCorrectList(self, index, item, output):
-        for lista in output:
-            if item.getId() in lista:
-                print(item.getId())
-                lista.append(index + 1)
-                print(lista)
-
     def kruskal(self):
         tree = []
         tree_map = [[vertex.getId()] for vertex in self._nodes]
