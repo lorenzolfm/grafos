@@ -441,18 +441,13 @@ class Graph:
 
     def printCFC(self):
         At = self.stronglyConnectedComponents()
+        size = len(At)
+        print(At, size)
 
-        output = [[i + 1] for i in range(len(At)) if At[i] == None]
-
-        for i in range(len(At)):
-            if At[i] != None:
-                self.appendToCorrectList(i, At[i], output)
-
-        for lista in output:
-            print(*lista, sep=", ")
-
-
-    def appendToCorrectList(self, index, item, output):
-        for lista in output:
-            if item.getId() in lista:
-                lista.append(index + 1)
+        output = []
+        i = 0
+        while i < size:
+            if At[i] == None:
+                output.append([i + 1])
+            i += 1
+            print(output)
