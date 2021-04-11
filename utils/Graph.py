@@ -375,7 +375,7 @@ class Graph:
         topologicalOrder.insert(0, vertex.getData())
 
     def print_ordering(self):
-        print(self.topological_ordering())
+        print(*self.topological_ordering(), sep=" -> ")
 
 
     def stronglyConnectedComponents(self,):
