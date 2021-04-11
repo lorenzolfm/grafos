@@ -1,3 +1,4 @@
+from copy import deepcopy
 from queue import Queue
 from utils.Node import Node
 from utils.AdjNode import AdjNode
@@ -375,38 +376,44 @@ class Graph:
         topologicalOrder.insert(0, vertex.getData())
 
     def print_ordering(self):
-        print(self.topological_ordering())
+        print(*self.topological_ordering(), sep=" -> ")
 
 
     def stronglyConnectedComponents(self,):
-        know, beginTime, archs, endTime = self.dfs()
+        known, beginTime, ancestral, endTime = self.dfs(self._nodes)
 
-        transposedGraph = Graph('assets/cfc.net', isDirected = True)
+        transposedGraph = deepcopy(self)
         transposedGraph._edges = self.invertArchs()
+        for vertex in transposedGraph._nodes:
+            vertex.getAdjList().clear()
+
+        for edge in transposedGraph._edges:
+            source = transposedGraph._nodes[edge[0] - 1]
+            destiny = transposedGraph._nodes[edge[1] - 1]
+            weight = edge[2]
+            adjNode = AdjNode(destiny.getId(), weight)
+            source.addAdjacent(adjNode)
 
         endTimeDict = {}
         for i in range(len(self._nodes)):
             endTimeDict[self._nodes[i]] = endTime[i]
 
-        order = dict(sorted(endTimeDict.items(), key=lambda item: item[1], reverse = True))
+        order = list(dict(sorted(endTimeDict.items(), key=lambda item: item[1], reverse = True)).keys())
 
-        Ct, Tt, At, Ft = transposedGraph.dfs_adapted(list(order.keys()))
+        Ct, Tt, At, Ft = transposedGraph.dfs(order)
 
         return At
 
-    def dfs(self):
-        # Cv
-        known = [False] * self._numberOfNodes
-        # Tv
-        beginTime = [float('inf')] * self._numberOfNodes
-        # Fv
-        endTime = [float('inf')] * self._numberOfNodes
 
+    def dfs(self, order):
+        known = [False] * self._numberOfNodes
+        beginTime = [float('inf')] * self._numberOfNodes
+        endTime = [float('inf')] * self._numberOfNodes
         ancestral = [None] * self._numberOfNodes
 
         time = 0
 
-        for i in self._nodes:
+        for i in order:
             if not known[i.getId() - 1]:
                 time = self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
 
@@ -418,7 +425,8 @@ class Graph:
         time += 1
         beginTime[vertex.getId() - 1] = time
 
-        for i in self._nodes[vertex.getId() - 1].getAdjList():
+
+        for i in vertex.getAdjList():
             if not known[i.getId()-1]:
                 ancestral[i.getId() - 1] = vertex
                 time = self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
@@ -428,29 +436,57 @@ class Graph:
 
         return time
 
-
-    def dfs_adapted(self, order):
-        # Cv
-        known = [False] * self._numberOfNodes
-        # Tv
-        beginTime = [float('inf')] * self._numberOfNodes
-        # Fv
-        endTime = [float('inf')] * self._numberOfNodes
-        # Av
-        ancestral = [None] * self._numberOfNodes
-
-        time = 0
-
-        for i in order:
-            if not known[i.getId() - 1]:
-                self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
-
-        return known, beginTime, ancestral, endTime
-
-
     def invertArchs(self):
         invertedArchs = [(y, x, z) for (x, y, z) in self._edges]
         return invertedArchs
 
     def printCFC(self):
-        print(self.stronglyConnectedComponents())
+        At = self.stronglyConnectedComponents()
+
+        output = [[i + 1] for i in range(len(At)) if At[i] == None]
+
+        for i in range(len(At)):
+            if At[i] != None:
+                aux = At[i]
+                while At[aux.getId() - 1] != None:
+                    aux = At[aux.getId() - 1]
+
+                for lista in output:
+                    if aux.getId() in lista:
+                        lista.append(i + 1)
+
+        for lista in output:
+            print(*lista, sep=",")
+
+
+    def appendToCorrectList(self, index, item, output):
+        for lista in output:
+            if item.getId() in lista:
+                print(item.getId())
+                lista.append(index + 1)
+                print(lista)
+
+    def kruskal(self):
+        tree = []
+        tree_map = [[vertex.getId()] for vertex in self._nodes]
+        crescent_edges = sorted(self._edges, key=lambda x: x[2])
+        for edge in crescent_edges:
+            if tree_map[edge[0]-1] != tree_map[edge[1]-1]:
+                tree.append(edge)
+                x = tree_map[edge[0]-1] + tree_map[edge[1]-1]
+
+            for y in x:
+                tree_map[y-1] = x
+
+        return tree
+
+    def print_kruskal(self):
+        tree = self.kruskal()
+        cust = 0
+        test = []
+        for x in tree:
+            cust += x[2]
+            test.append(f"{x[0]}-{x[1]}")
+
+        print(cust)
+        print(*test, sep=", ")

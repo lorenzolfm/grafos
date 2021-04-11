@@ -1,4 +1,4 @@
 from utils.Graph import Graph
 
-graph = Graph('assets/manha.net', isDirected = True)
-graph.print_ordering()
+graph = Graph('assets/cfc.net', isDirected = True)
+graph.printCFC()
