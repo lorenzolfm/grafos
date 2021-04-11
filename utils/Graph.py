@@ -379,16 +379,10 @@ class Graph:
 
 
     def stronglyConnectedComponents(self,):
-        known, beginTime, ancestral, endTime = self.dfs()
-        # print(f"known = {known}")
-        # print(f"beginTime = {beginTime}")
-        # print(f"ancestral = {ancestral}")
-        # print(f"endTime = {endTime}")
+        known, beginTime, ancestral, endTime = self.dfs(self._nodes)
 
         transposedGraph = Graph('assets/cfc.net', isDirected = True)
-        # print(transposedGraph._edges)
         transposedGraph._edges = self.invertArchs()
-        # print(transposedGraph._edges)
         for vertex in transposedGraph._nodes:
             vertex.getAdjList().clear()
 
@@ -398,43 +392,27 @@ class Graph:
             weight = edge[2]
             adjNode = AdjNode(destiny.getId(), weight)
             source.addAdjacent(adjNode)
-            # print(source.getAdjList())
-
-        for vertex in transposedGraph._nodes:
-            print(f"Vértice: {vertex}, Adjacentes: {vertex.getAdjList()}")
-
-        # print(f"Grafo: ")
-        # print(f"Vértices: {self._nodes}")
-        # print(f"Arcos: {self._edges}")
-
-        # print(f"Grafo transposto")
-        # print(f"Vértices: {transposedGraph._nodes}")
-        # print(f"Arcos: {transposedGraph._edges}")
 
         endTimeDict = {}
         for i in range(len(self._nodes)):
             endTimeDict[self._nodes[i]] = endTime[i]
 
-        order = dict(sorted(endTimeDict.items(), key=lambda item: item[1], reverse = True))
-        # print(order)
+        order = list(dict(sorted(endTimeDict.items(), key=lambda item: item[1], reverse = True)).keys())
 
-        Ct, Tt, At, Ft = transposedGraph.dfs_adapted(list(order.keys()))
+        Ct, Tt, At, Ft = transposedGraph.dfs(order)
 
         return At
 
-    def dfs(self):
-        # Cv
-        known = [False] * self._numberOfNodes
-        # Tv
-        beginTime = [float('inf')] * self._numberOfNodes
-        # Fv
-        endTime = [float('inf')] * self._numberOfNodes
 
+    def dfs(self, order):
+        known = [False] * self._numberOfNodes
+        beginTime = [float('inf')] * self._numberOfNodes
+        endTime = [float('inf')] * self._numberOfNodes
         ancestral = [None] * self._numberOfNodes
 
         time = 0
 
-        for i in self._nodes:
+        for i in order:
             if not known[i.getId() - 1]:
                 time = self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
 
@@ -446,51 +424,43 @@ class Graph:
         time += 1
         beginTime[vertex.getId() - 1] = time
 
-        # print(f"vértice: {vertex}")
-        # print(f"C: {known}")
-        # print(f"t: {time}")
-        # print(f"beginTime: {beginTime}")
 
-        vizinhos = self._nodes[vertex.getId() - 1].getAdjList()
-        # vizinhos = vertex.getAdjList()
-        # print(f"vizinhos: {vertex.getAdjList()}")
-        for i in self._nodes[vertex.getId() - 1].getAdjList():
+        for i in vertex.getAdjList():
             if not known[i.getId()-1]:
                 ancestral[i.getId() - 1] = vertex
                 time = self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
 
         time += 1
         endTime[vertex.getId() - 1] = time
-        print("")
 
         return time
-
-
-    def dfs_adapted(self, order):
-        # Cv
-        known = [False] * self._numberOfNodes
-        # Tv
-        beginTime = [float('inf')] * self._numberOfNodes
-        # Fv
-        endTime = [float('inf')] * self._numberOfNodes
-        # Av
-        ancestral = [None] * self._numberOfNodes
-
-        time = 0
-
-        print()
-        print(order)
-        for i in order:
-            if not known[i.getId() - 1]:
-                print(f"dfsVisit vai ser chamado em dfs_adapted")
-                time = self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
-
-        return known, beginTime, ancestral, endTime
-
 
     def invertArchs(self):
         invertedArchs = [(y, x, z) for (x, y, z) in self._edges]
         return invertedArchs
 
     def printCFC(self):
-        print(self.stronglyConnectedComponents())
+        """
+        Para o exemplo em questão tem que printar:
+        a b c
+        d e f
+
+        1 2 3
+        4 5 6
+        """
+        At = self.stronglyConnectedComponents()
+
+        output = [[i + 1] for i in range(len(At)) if At[i] == None]
+
+        for i in range(len(At)):
+            if At[i] != None:
+                self.appendToCorrectList(i, At[i], output)
+
+        for lista in output:
+            print(*lista, sep=", ")
+
+
+    def appendToCorrectList(self, index, item, output):
+        for lista in output:
+            if item.getId() in lista:
+                lista.append(index + 1)
