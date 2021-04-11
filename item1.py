@@ -1,4 +1,9 @@
+import sys
 from utils.Graph import Graph
 
-graph = Graph('assets/cfc.net', isDirected = True)
-graph.printCFC()
+try:
+    path = str(sys.argv[1])
+    graph = Graph(path, isDirected = True)
+    graph.printCFC()
+except FileNotFoundError:
+    print("Não achei esse arquivo")

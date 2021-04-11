@@ -1,5 +1,9 @@
+import sys
 from utils.Graph import Graph
 
-graph = Graph('assets/agm_tiny.net', False)
-graph.print_kruskal()
-
+try:
+    path = str(sys.argv[1])
+    graph = Graph(path, isDirected = True)
+    graph.print_kruskal()
+except FileNotFoundError:
+    print("Não achei esse arquivo")
