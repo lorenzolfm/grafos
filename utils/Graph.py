@@ -379,16 +379,44 @@ class Graph:
 
 
     def stronglyConnectedComponents(self,):
-        know, beginTime, archs, endTime = self.dfs()
+        known, beginTime, ancestral, endTime = self.dfs()
+        # print(f"known = {known}")
+        # print(f"beginTime = {beginTime}")
+        # print(f"ancestral = {ancestral}")
+        # print(f"endTime = {endTime}")
 
         transposedGraph = Graph('assets/cfc.net', isDirected = True)
+        # print(transposedGraph._edges)
         transposedGraph._edges = self.invertArchs()
+        # print(transposedGraph._edges)
+        for vertex in transposedGraph._nodes:
+            vertex.getAdjList().clear()
+
+        for edge in transposedGraph._edges:
+            source = transposedGraph._nodes[edge[0] - 1]
+            destiny = transposedGraph._nodes[edge[1] - 1]
+            weight = edge[2]
+            adjNode = AdjNode(destiny.getId(), weight)
+            source.addAdjacent(adjNode)
+            # print(source.getAdjList())
+
+        for vertex in transposedGraph._nodes:
+            print(f"Vértice: {vertex}, Adjacentes: {vertex.getAdjList()}")
+
+        # print(f"Grafo: ")
+        # print(f"Vértices: {self._nodes}")
+        # print(f"Arcos: {self._edges}")
+
+        # print(f"Grafo transposto")
+        # print(f"Vértices: {transposedGraph._nodes}")
+        # print(f"Arcos: {transposedGraph._edges}")
 
         endTimeDict = {}
         for i in range(len(self._nodes)):
             endTimeDict[self._nodes[i]] = endTime[i]
 
         order = dict(sorted(endTimeDict.items(), key=lambda item: item[1], reverse = True))
+        # print(order)
 
         Ct, Tt, At, Ft = transposedGraph.dfs_adapted(list(order.keys()))
 
@@ -418,6 +446,14 @@ class Graph:
         time += 1
         beginTime[vertex.getId() - 1] = time
 
+        # print(f"vértice: {vertex}")
+        # print(f"C: {known}")
+        # print(f"t: {time}")
+        # print(f"beginTime: {beginTime}")
+
+        vizinhos = self._nodes[vertex.getId() - 1].getAdjList()
+        # vizinhos = vertex.getAdjList()
+        # print(f"vizinhos: {vertex.getAdjList()}")
         for i in self._nodes[vertex.getId() - 1].getAdjList():
             if not known[i.getId()-1]:
                 ancestral[i.getId() - 1] = vertex
@@ -425,6 +461,7 @@ class Graph:
 
         time += 1
         endTime[vertex.getId() - 1] = time
+        print("")
 
         return time
 
@@ -441,9 +478,12 @@ class Graph:
 
         time = 0
 
+        print()
+        print(order)
         for i in order:
             if not known[i.getId() - 1]:
-                self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
+                print(f"dfsVisit vai ser chamado em dfs_adapted")
+                time = self.dfsVisit(self._nodes[i.getId() - 1], known, beginTime, ancestral, endTime, time)
 
         return known, beginTime, ancestral, endTime
 
