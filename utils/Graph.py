@@ -456,3 +456,29 @@ class Graph:
         for lista in output:
             if item.getId() in lista:
                 lista.append(index + 1)
+
+    def kruskal(self):
+        tree = []
+        tree_map = [[vertex.getId()] for vertex in self._nodes]
+        crescent_edges = sorted(self._edges, key=lambda x: x[2])
+        for edge in crescent_edges:
+            if tree_map[edge[0]-1] != tree_map[edge[1]-1]:
+                tree.append(edge)
+                x = tree_map[edge[0]-1] + tree_map[edge[1]-1]
+
+            for y in x:
+                tree_map[y-1] = x
+
+        return tree
+
+    def print_kruskal(self):
+        tree = self.kruskal()
+        cust = 0
+        test = []
+        for x in tree:
+            cust += x[2]
+            test.append(f"{x[0]}-{x[1]}")
+
+        print(cust)
+        print(*test, sep=", ")
+
