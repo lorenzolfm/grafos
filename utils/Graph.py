@@ -1,3 +1,4 @@
+from copy import deepcopy
 from queue import Queue
 from utils.Node import Node
 from utils.AdjNode import AdjNode
@@ -381,7 +382,7 @@ class Graph:
     def stronglyConnectedComponents(self,):
         known, beginTime, ancestral, endTime = self.dfs(self._nodes)
 
-        transposedGraph = Graph('assets/cfc.net', isDirected = True)
+        transposedGraph = deepcopy(self)
         transposedGraph._edges = self.invertArchs()
         for vertex in transposedGraph._nodes:
             vertex.getAdjList().clear()
