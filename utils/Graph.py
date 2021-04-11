@@ -446,16 +446,24 @@ class Graph:
 
         for i in range(len(At)):
             if At[i] != None:
-                self.appendToCorrectList(i, At[i], output)
+                aux = At[i]
+                while At[aux.getId() - 1] != None:
+                    aux = At[aux.getId() - 1]
+
+                for lista in output:
+                    if aux.getId() in lista:
+                        lista.append(i + 1)
 
         for lista in output:
-            print(*lista, sep=", ")
+            print(*lista, sep=",")
 
 
     def appendToCorrectList(self, index, item, output):
         for lista in output:
             if item.getId() in lista:
+                print(item.getId())
                 lista.append(index + 1)
+                print(lista)
 
     def kruskal(self):
         tree = []
