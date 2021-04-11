@@ -489,4 +489,3 @@ class Graph:
 
         print(cust)
         print(*test, sep=", ")
-
