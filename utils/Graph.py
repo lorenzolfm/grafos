@@ -440,14 +440,6 @@ class Graph:
         return invertedArchs
 
     def printCFC(self):
-        """
-        Para o exemplo em questão tem que printar:
-        a b c
-        d e f
-
-        1 2 3
-        4 5 6
-        """
         At = self.stronglyConnectedComponents()
 
         output = [[i + 1] for i in range(len(At)) if At[i] == None]
