@@ -482,3 +482,39 @@ class Graph:
 
         print(cust)
         print(*test, sep=", ")
+
+    def edmonds_karp(self, begin_vertex, vortex_vertex):
+        # TODO: alterar nomes de variaveis
+        C = [False] * self._numberOfNodes
+
+        A = [None] * self._numberOfNodes
+
+        C[begin_vertex] = True
+
+        queue = Queue()
+
+        queue.put(begin_vertex)
+
+        while not queue.empty():
+            aux_vertex = queue.get()
+
+            for vertex in aux_vertex.getAdjList():
+                # TODO: adicionar -> and c((u, v)) - f((u, v)) > 0
+                if not C[vertex] and self._edges[aux_vertex][vertex] > 0:
+                    C[vertex] = True
+                    A[vertex] = aux_vertex
+
+                    if vertex == vortex_vertex:
+                        p = [vortex_vertex]
+                        w = vortex_vertex
+
+                        while w != begin_vertex:
+                            w = A[w]
+                            p.insert(0, w)
+
+                        return p
+
+                    queue.put(vertex)
+
+        return None
+
