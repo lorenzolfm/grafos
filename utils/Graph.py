@@ -522,7 +522,13 @@ class Graph:
         # TODO: é melhor transformar em uma lista de listas
         flow = [0] * self._numberOfEdges
         rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
+        flow_cost = deepcopy(self._edges)
 
         while rising_path:
-            self._edges
+            # self._edges
+            for u, v, _ in rising_path:
+                if self._edges[u][v]:
+                    flow[u][v] += flow_cost[u][v].getWeight()
+                else:
+                    flow[u][v] -= flow_cost[u][v].getWeight()
 
