@@ -539,34 +539,44 @@ class Graph:
         print(app)
 
     def hopcroft_karp(self):
+        Dv = [float('inf') for vertex in self._nodes]
+        matev = [None for vertex in self._nodes]
+
+        # Tamanho do emparelhamento
+        m = 0
+        X = self._nodes[:3]
+
+        while self.BFS(matev, Dv):
+            for x in X:
+                if mate[x.getId() - 1] == None:
+                    if DFS(mate, x, D):
+                        m += 1
+
+        return (m, matev)
+
+    def BFS(self, mate, D):
+        Q = Queue()
+        X = self._nodes[:3]
+        for x in X:
+            if mate[x.getId() - 1] == None:
+                D[x.getId() - 1] = 0
+                Q.put(x)
+            else:
+                D[x.getId() - 1] = float('inf')
+
+        D.append(float('inf'))
+        while not Q.empty():
+            x = Q.get()
+            if D[x.getId() - 1] < D[-1]:
+                for y in x.getAdjList():
+                    y = self._nodes[y.getId() - 1]
+                    nova = mate[y.getId() - 1]
+                    if (nova is not None) and (D[nova] == float('inf')):
+                        D[mate[y.getId() - 1]] = D[x.getId() - 1] + 1
+                        Q.put(mate[y.getId() - 1])
+
+        return D[-1] != float('inf')
+
+
+    def DFS(self, mate, x, D):
         pass
-
-
-
-
-
-
-
-
-    # def ford_fulkerson(self, font_vertex, vortex_vertex):
-        # flow = {}
-        # for edge in self._edges:
-            # flow[(edge[0], edge[1])] = 0
-
-        # rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
-        # copy = deepcopy(self._edges)
-
-        # edgesDict = {}
-        # for edge in self._edges:
-            # flow[(edge[0], edge[1])] = edge[2]
-
-        # while rising_path:
-            # for u, u + 1 in range(rising_path):
-                # [(u, v), (v, w), ...]
-            # for u, v, _ in rising_path:
-                # if self._edges[u][v]:
-                    # flow[u][v] += self.peso(u, v)
-                # else:
-                    # flow[v][u] -= self.peso(u, v)
-
-            # rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
