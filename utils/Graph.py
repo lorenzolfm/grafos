@@ -486,44 +486,54 @@ class Graph:
     Ao final, imprima na tela o valor do fluxo máximo resultante da execução do algoritmo de Edmonds-Karp
     """
     def edmonds_karp(self, font_vertex, vortex_vertex):
-        # TODO: alterar nomes de variaveis
         known = [False] * self._numberOfNodes
         ancestral = [None] * self._numberOfNodes
-        known[font_vertex] = True
+        known[font_vertex.getId() - 1] = True
         queue = Queue()
         queue.put(font_vertex)
 
         while not queue.empty():
             aux_vertex = queue.get()
+
             for vertex in aux_vertex.getAdjList():
-                if not known[vertex] and self._edges[aux_vertex][vertex] > 0:
-                    known[vertex] = True
-                    ancestral[vertex] = aux_vertex
+                vertex = self._nodes[vertex.getId() - 1]
+                if not known[vertex.getId() - 1] and self.peso(aux_vertex.getId(), vertex.getId()) > 0:
+                    known[vertex.getId() - 1] = True
+                    ancestral[vertex.getId() - 1] = aux_vertex
 
                     if vertex == vortex_vertex:
                         rising_path = [vortex_vertex]
                         w = vortex_vertex
 
                         while w != font_vertex:
-                            w = ancestral[w]
+                            w = ancestral[w.getId() - 1]
                             rising_path.insert(0, w)
 
                         return rising_path
 
                     queue.put(vertex)
 
-        return None
+        return False
 
     def ford_fulkerson(self, font_vertex, vortex_vertex):
-        # TODO: é melhor transformar em uma lista de listas
-        flow = [0] * self._numberOfEdges
+        flow = {}
+        for edge in self._edges:
+            flow[(edge[0], edge[1])] = 0
+
         rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
-        flow_cost = deepcopy(self._edges)
+        copy = deepcopy(self._edges)
+
+        edgesDict = {}
+        for edge in self._edges:
+            flow[(edge[0], edge[1])] = edge[2]
 
         while rising_path:
-            # self._edges
-            for u, v, _ in rising_path:
-                if self._edges[u][v]:
-                    flow[u][v] += flow_cost[u][v].getWeight()
-                else:
-                    flow[u][v] -= flow_cost[u][v].getWeight()
+            for u, u + 1 in range(rising_path):
+                # [(u, v), (v, w), ...]
+            # for u, v, _ in rising_path:
+                # if self._edges[u][v]:
+                    # flow[u][v] += self.peso(u, v)
+                # else:
+                    # flow[v][u] -= self.peso(u, v)
+
+            # rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
