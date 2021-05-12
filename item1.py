@@ -4,6 +4,8 @@ from utils.Graph import Graph
 try:
     path = str(sys.argv[1])
     graph = Graph(path, isDirected = True)
-    graph.ford_fulkerson()
+    s = graph.getNode(1)
+    t = graph.getNode(6)
+    graph.ford_fulkerson(s, t)
 except FileNotFoundError:
-    print("Não achei esse arquivo")
+    print("Nao achei esse arquivo")
