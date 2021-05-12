@@ -10,9 +10,7 @@ class Graph:
         self._numberOfNodes = 0
         self._numberOfEdges = 0
         self.isDirected = isDirected
-
         self._numberOfNodes, rawNodes, rawEdges = self._readFile(file)
-
         self._nodes = [None] * self._numberOfNodes
         self._edges = []
         self._insertNodes(rawNodes)
@@ -490,20 +488,14 @@ class Graph:
     def edmonds_karp(self, font_vertex, vortex_vertex):
         # TODO: alterar nomes de variaveis
         known = [False] * self._numberOfNodes
-
         ancestral = [None] * self._numberOfNodes
-
         known[font_vertex] = True
-
         queue = Queue()
-
         queue.put(font_vertex)
 
         while not queue.empty():
             aux_vertex = queue.get()
-
             for vertex in aux_vertex.getAdjList():
-                # TODO: adicionar -> and c((u, v)) - f((u, v)) > 0
                 if not known[vertex] and self._edges[aux_vertex][vertex] > 0:
                     known[vertex] = True
                     ancestral[vertex] = aux_vertex
