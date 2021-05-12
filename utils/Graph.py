@@ -483,6 +483,10 @@ class Graph:
         print(cust)
         print(*test, sep=", ")
 
+    """
+    Cria um programa que receba um grafo dirigido e ponderado como argumento.
+    Ao final, imprima na tela o valor do fluxo máximo resultante da execução do algoritmo de Edmonds-Karp
+    """
     def edmonds_karp(self, font_vertex, vortex_vertex):
         # TODO: alterar nomes de variaveis
         known = [False] * self._numberOfNodes
@@ -531,4 +535,3 @@ class Graph:
                     flow[u][v] += flow_cost[u][v].getWeight()
                 else:
                     flow[u][v] -= flow_cost[u][v].getWeight()
-
