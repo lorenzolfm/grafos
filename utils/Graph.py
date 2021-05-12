@@ -485,50 +485,83 @@ class Graph:
     Cria um programa que receba um grafo dirigido e ponderado como argumento.
     Ao final, imprima na tela o valor do fluxo máximo resultante da execução do algoritmo de Edmonds-Karp
     """
-    def edmonds_karp(self, font_vertex, vortex_vertex):
-        known = [False] * self._numberOfNodes
-        ancestral = [None] * self._numberOfNodes
-        known[font_vertex.getId() - 1] = True
-        queue = Queue()
-        queue.put(font_vertex)
+    def edmonds_karp(self, s, t):
+        # Configurando todos os vértices
+        C = {vertex:False for vertex in self._nodes}
+        A = {vertex:None for vertex in self._nodes}
 
-        while not queue.empty():
-            aux_vertex = queue.get()
+        f = {(edge[0], edge[1]):edge[2] for edge in self._edges}
 
-            for vertex in aux_vertex.getAdjList():
-                vertex = self._nodes[vertex.getId() - 1]
-                if not known[vertex.getId() - 1] and self.peso(aux_vertex.getId(), vertex.getId()) > 0:
-                    known[vertex.getId() - 1] = True
-                    ancestral[vertex.getId() - 1] = aux_vertex
-
-                    if vertex == vortex_vertex:
-                        rising_path = [vortex_vertex]
-                        w = vortex_vertex
-
-                        while w != font_vertex:
-                            w = ancestral[w.getId() - 1]
-                            rising_path.insert(0, w)
-
-                        return rising_path
-
-                    queue.put(vertex)
-
-        return False
-
-    def ford_fulkerson(self, font_vertex, vortex_vertex):
-        flow = {}
-        for edge in self._edges:
-            flow[(edge[0], edge[1])] = 0
-
-        rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
         copy = deepcopy(self._edges)
 
-        edgesDict = {}
-        for edge in self._edges:
-            flow[(edge[0], edge[1])] = edge[2]
+        # Configurando vértice de origem
+        C[s] = True
 
-        while rising_path:
-            for u, u + 1 in range(rising_path):
+        Q = Queue()
+
+        # Iniciar busca pela fonte
+        Q.put(s)
+
+        while not Q.empty():
+            u = Q.get()
+            for v in u.getAdjList():
+                v = self._nodes[v.getId() -1]
+                fuv = f[(u.getId(), v.getId())]
+                if (not C[v]) and (fuv > 0):
+                    C[v] = True
+                    A[v] = u
+                    # Sorvedouro encontrado. Criar caminho aumentante.
+                    if v == t:
+                        p = [t]
+                        w = t
+                        while w != s:
+                           w = A[w]
+                           p.insert(0, w)
+                        return p
+                    Q.put(v)
+
+        return None
+
+    def ford_fulkerson(self, s, t):
+        fuv = {(edge[0], edge[1]): 0 for edge in self._edges}
+
+        p = self.edmonds_karp(s, t)
+        print(p)
+        # [1,2,3,6]
+        # cfp -> aresta com menor fluxo
+        l = []
+        cfp = []
+        for i in range(len(p) - 1):
+            peso = self.peso(p[i].getId(), p[i+1].getId())
+            l.append(peso)
+
+        cfp.append(min(l))
+        print(app)
+
+    def hopcroft_karp(self):
+        pass
+
+
+
+
+
+
+
+
+    # def ford_fulkerson(self, font_vertex, vortex_vertex):
+        # flow = {}
+        # for edge in self._edges:
+            # flow[(edge[0], edge[1])] = 0
+
+        # rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
+        # copy = deepcopy(self._edges)
+
+        # edgesDict = {}
+        # for edge in self._edges:
+            # flow[(edge[0], edge[1])] = edge[2]
+
+        # while rising_path:
+            # for u, u + 1 in range(rising_path):
                 # [(u, v), (v, w), ...]
             # for u, v, _ in rising_path:
                 # if self._edges[u][v]:
