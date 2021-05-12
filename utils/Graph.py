@@ -482,3 +482,53 @@ class Graph:
 
         print(cust)
         print(*test, sep=", ")
+
+    def edmonds_karp(self, font_vertex, vortex_vertex):
+        # TODO: alterar nomes de variaveis
+        known = [False] * self._numberOfNodes
+
+        ancestral = [None] * self._numberOfNodes
+
+        known[font_vertex] = True
+
+        queue = Queue()
+
+        queue.put(font_vertex)
+
+        while not queue.empty():
+            aux_vertex = queue.get()
+
+            for vertex in aux_vertex.getAdjList():
+                # TODO: adicionar -> and c((u, v)) - f((u, v)) > 0
+                if not known[vertex] and self._edges[aux_vertex][vertex] > 0:
+                    known[vertex] = True
+                    ancestral[vertex] = aux_vertex
+
+                    if vertex == vortex_vertex:
+                        rising_path = [vortex_vertex]
+                        w = vortex_vertex
+
+                        while w != font_vertex:
+                            w = ancestral[w]
+                            rising_path.insert(0, w)
+
+                        return rising_path
+
+                    queue.put(vertex)
+
+        return None
+
+    def ford_fulkerson(self, font_vertex, vortex_vertex):
+        # TODO: é melhor transformar em uma lista de listas
+        flow = [0] * self._numberOfEdges
+        rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
+        flow_cost = deepcopy(self._edges)
+
+        while rising_path:
+            # self._edges
+            for u, v, _ in rising_path:
+                if self._edges[u][v]:
+                    flow[u][v] += flow_cost[u][v].getWeight()
+                else:
+                    flow[u][v] -= flow_cost[u][v].getWeight()
+
