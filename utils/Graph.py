@@ -542,7 +542,6 @@ class Graph:
         Dv = [float('inf') for vertex in self._nodes]
         matev = [None for vertex in self._nodes]
 
-        # Tamanho do emparelhamento
         m = 0
         X = self._nodes[:3]
 
@@ -579,4 +578,17 @@ class Graph:
 
 
     def DFS(self, mate, x, D):
-        pass
+        if x is not None:
+            for y in x.getAdjList():
+                y = self._nodes[y.getId() - 1]
+                nova = mate[y.getId() - 1]
+                if (nova is not None) and (D[nova] == D[x.getId() - 1] + 1):
+                    if DFS(mate, nova, D):
+                        mate[y.getId() - 1] = x
+                        mate[x.getId() - 1] = y
+                        return True
+
+            D[x.getId() - 1] = float('inf')
+            return False
+
+        return True
