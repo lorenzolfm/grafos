@@ -537,36 +537,3 @@ class Graph:
 
         cfp.append(min(l))
         print(app)
-
-    def hopcroft_karp(self):
-        pass
-
-
-
-
-
-
-
-
-    # def ford_fulkerson(self, font_vertex, vortex_vertex):
-        # flow = {}
-        # for edge in self._edges:
-            # flow[(edge[0], edge[1])] = 0
-
-        # rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
-        # copy = deepcopy(self._edges)
-
-        # edgesDict = {}
-        # for edge in self._edges:
-            # flow[(edge[0], edge[1])] = edge[2]
-
-        # while rising_path:
-            # for u, u + 1 in range(rising_path):
-                # [(u, v), (v, w), ...]
-            # for u, v, _ in rising_path:
-                # if self._edges[u][v]:
-                    # flow[u][v] += self.peso(u, v)
-                # else:
-                    # flow[v][u] -= self.peso(u, v)
-
-            # rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
