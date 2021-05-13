@@ -485,14 +485,10 @@ class Graph:
     Cria um programa que receba um grafo dirigido e ponderado como argumento.
     Ao final, imprima na tela o valor do fluxo máximo resultante da execução do algoritmo de Edmonds-Karp
     """
-    def edmonds_karp(self, s, t):
+    def edmonds_karp(self, s, t, fuv):
         # Configurando todos os vértices
-        C = {vertex:False for vertex in self._nodes}
-        A = {vertex:None for vertex in self._nodes}
-
-        f = {(edge[0], edge[1]):edge[2] for edge in self._edges}
-
-        copy = deepcopy(self._edges)
+        C = {vertex: False for vertex in self._nodes}
+        A = {vertex: None for vertex in self._nodes}
 
         # Configurando vértice de origem
         C[s] = True
@@ -505,9 +501,9 @@ class Graph:
         while not Q.empty():
             u = Q.get()
             for v in u.getAdjList():
-                v = self._nodes[v.getId() -1]
-                fuv = f[(u.getId(), v.getId())]
-                if (not C[v]) and (fuv > 0):
+                v = self._nodes[v.getId() - 1]
+                flow = self.peso(u.getId(), v.getId()) - fuv[(u.getId(), v.getId())]
+                if (not C[v]) and (flow > 0):
                     C[v] = True
                     A[v] = u
                     # Sorvedouro encontrado. Criar caminho aumentante.
@@ -522,21 +518,34 @@ class Graph:
 
         return None
 
-    def ford_fulkerson(self, s, t):
+    def ford_fulkerson(self):
+        s = self._nodes[0]
+        t = self._nodes[-1]
         fuv = {(edge[0], edge[1]): 0 for edge in self._edges}
+        p = self.edmonds_karp(s, t, fuv)
+        max_flow = 0
 
-        p = self.edmonds_karp(s, t)
-        print(p)
-        # [1,2,3,6]
-        # cfp -> aresta com menor fluxo
-        l = []
-        cfp = []
-        for i in range(len(p) - 1):
-            peso = self.peso(p[i].getId(), p[i+1].getId())
-            l.append(peso)
+        while p:
+            cost = []
+            arestas = []
+            for i in range(len(p) - 1):
+                arestas.append([p[i].getId(), p[i+1].getId()])
+                peso = self.peso(p[i].getId(), p[i+1].getId())
+                cost.append(peso)
 
-        cfp.append(min(l))
-        print(app)
+            cfp = min(cost)
+            max_flow += cfp
+
+            for u, v in arestas:
+                if self.haAresta(u, v):
+                    fuv[(u, v)] += cfp
+                else:
+                    fuv[(v, u)] -= cfp
+
+            p = self.edmonds_karp(s, t, fuv)
+
+        print(max_flow)
+        return max_flow
 
     def hopcroft_karp(self):
         null = Node(len(self._nodes) + 1, None)
