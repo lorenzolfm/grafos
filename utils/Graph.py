@@ -539,51 +539,64 @@ class Graph:
         print(app)
 
     def hopcroft_karp(self):
-        Dv = [float('inf') for vertex in self._nodes]
-        matev = [None for vertex in self._nodes]
+        null = Node(7, None)
+        D = [float('inf') for vertex in self._nodes]
+        D.append(float("inf"))
+        mate = [null for vertex in self._nodes]
 
         m = 0
         X = self._nodes[:3]
 
-        while self.BFS(matev, Dv):
+        while self.BFS(mate, D, null):
+            # print("hi")
             for x in X:
-                if mate[x.getId() - 1] == None:
-                    if DFS(mate, x, D):
+                # print(x, type(x))
+                if mate[x.getId() - 1] == null:
+                    if self.DFS(mate, x, D, null):
                         m += 1
 
-        return (m, matev)
+        return (m, mate)
 
-    def BFS(self, mate, D):
+    def BFS(self, mate, D, null):
         Q = Queue()
         X = self._nodes[:3]
         for x in X:
-            if mate[x.getId() - 1] == None:
+            # print(x, type(x))
+            # print(null, type(null))
+            if mate[x.getId() - 1] == null:
+                # print(D)
+                # print("hi")
                 D[x.getId() - 1] = 0
+                # print(D)
                 Q.put(x)
             else:
                 D[x.getId() - 1] = float('inf')
 
-        D.append(float('inf'))
+        # D.append(float('inf'))
+        D[-1] = float("inf")
+        # print(D[-1])
         while not Q.empty():
             x = Q.get()
             if D[x.getId() - 1] < D[-1]:
+                # print("hi")
                 for y in x.getAdjList():
                     y = self._nodes[y.getId() - 1]
+                    # print(y, type(y), y.getId())
                     nova = mate[y.getId() - 1]
-                    if (nova is not None) and (D[nova] == float('inf')):
-                        D[mate[y.getId() - 1]] = D[x.getId() - 1] + 1
-                        Q.put(mate[y.getId() - 1])
+                    # print(nova, type(nova))
+                    if D[nova.getId() - 1] == float('inf'):
+                        D[nova.getId() - 1] = D[x.getId() - 1] + 1
+                        Q.put(nova)
 
         return D[-1] != float('inf')
 
-
-    def DFS(self, mate, x, D):
-        if x is not None:
+    def DFS(self, mate, x, D, null):
+        if x != null:
             for y in x.getAdjList():
                 y = self._nodes[y.getId() - 1]
                 nova = mate[y.getId() - 1]
-                if (nova is not None) and (D[nova] == D[x.getId() - 1] + 1):
-                    if DFS(mate, nova, D):
+                if D[nova.getId() - 1] == D[x.getId() - 1] + 1:
+                    if self.DFS(mate, nova, D, null):
                         mate[y.getId() - 1] = x
                         mate[x.getId() - 1] = y
                         return True
