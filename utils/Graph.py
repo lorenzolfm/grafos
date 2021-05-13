@@ -10,9 +10,7 @@ class Graph:
         self._numberOfNodes = 0
         self._numberOfEdges = 0
         self.isDirected = isDirected
-
         self._numberOfNodes, rawNodes, rawEdges = self._readFile(file)
-
         self._nodes = [None] * self._numberOfNodes
         self._edges = []
         self._insertNodes(rawNodes)
@@ -483,52 +481,140 @@ class Graph:
         print(cust)
         print(*test, sep=", ")
 
-    def edmonds_karp(self, font_vertex, vortex_vertex):
-        # TODO: alterar nomes de variaveis
-        known = [False] * self._numberOfNodes
+    """
+    Cria um programa que receba um grafo dirigido e ponderado como argumento.
+    Ao final, imprima na tela o valor do fluxo máximo resultante da execução do algoritmo de Edmonds-Karp
+    """
+    def edmonds_karp(self, s, t):
+        # Configurando todos os vértices
+        C = {vertex:False for vertex in self._nodes}
+        A = {vertex:None for vertex in self._nodes}
 
-        ancestral = [None] * self._numberOfNodes
+        f = {(edge[0], edge[1]):edge[2] for edge in self._edges}
 
-        known[font_vertex] = True
+        copy = deepcopy(self._edges)
 
-        queue = Queue()
+        # Configurando vértice de origem
+        C[s] = True
 
-        queue.put(font_vertex)
+        Q = Queue()
 
-        while not queue.empty():
-            aux_vertex = queue.get()
+        # Iniciar busca pela fonte
+        Q.put(s)
 
-            for vertex in aux_vertex.getAdjList():
-                # TODO: adicionar -> and c((u, v)) - f((u, v)) > 0
-                if not known[vertex] and self._edges[aux_vertex][vertex] > 0:
-                    known[vertex] = True
-                    ancestral[vertex] = aux_vertex
-
-                    if vertex == vortex_vertex:
-                        rising_path = [vortex_vertex]
-                        w = vortex_vertex
-
-                        while w != font_vertex:
-                            w = ancestral[w]
-                            rising_path.insert(0, w)
-
-                        return rising_path
-
-                    queue.put(vertex)
+        while not Q.empty():
+            u = Q.get()
+            for v in u.getAdjList():
+                v = self._nodes[v.getId() -1]
+                fuv = f[(u.getId(), v.getId())]
+                if (not C[v]) and (fuv > 0):
+                    C[v] = True
+                    A[v] = u
+                    # Sorvedouro encontrado. Criar caminho aumentante.
+                    if v == t:
+                        p = [t]
+                        w = t
+                        while w != s:
+                           w = A[w]
+                           p.insert(0, w)
+                        return p
+                    Q.put(v)
 
         return None
 
-    def ford_fulkerson(self, font_vertex, vortex_vertex):
-        # TODO: é melhor transformar em uma lista de listas
-        flow = [0] * self._numberOfEdges
-        rising_path = self.edmonds_karp(font_vertex, vortex_vertex)
-        flow_cost = deepcopy(self._edges)
+    def ford_fulkerson(self, s, t):
+        fuv = {(edge[0], edge[1]): 0 for edge in self._edges}
 
-        while rising_path:
-            # self._edges
-            for u, v, _ in rising_path:
-                if self._edges[u][v]:
-                    flow[u][v] += flow_cost[u][v].getWeight()
-                else:
-                    flow[u][v] -= flow_cost[u][v].getWeight()
+        p = self.edmonds_karp(s, t)
+        print(p)
+        # [1,2,3,6]
+        # cfp -> aresta com menor fluxo
+        l = []
+        cfp = []
+        for i in range(len(p) - 1):
+            peso = self.peso(p[i].getId(), p[i+1].getId())
+            l.append(peso)
 
+        cfp.append(min(l))
+        print(app)
+
+    def hopcroft_karp(self):
+        null = Node(len(self._nodes) + 1, None)
+        D = [float('inf') for _ in self._nodes]
+        D.append(float("inf"))
+        mate = [null for _ in self._nodes]
+
+        m = 0
+        X, _ = self.split_graph()
+
+        while self.BFS(mate, D, null, X):
+            for x in X:
+                if mate[x.getId() - 1] == null:
+                    if self.DFS(mate, x, D, null):
+                        m += 1
+
+        return (m, mate)
+
+    def BFS(self, mate, D, null, X):
+        Q = Queue()
+        for x in X:
+            if mate[x.getId() - 1] == null:
+                D[x.getId() - 1] = 0
+                Q.put(x)
+            else:
+                D[x.getId() - 1] = float('inf')
+
+        D[-1] = float("inf")
+        while not Q.empty():
+            x = Q.get()
+            if D[x.getId() - 1] < D[-1]:
+                for y in x.getAdjList():
+                    y = self._nodes[y.getId() - 1]
+                    nova = mate[y.getId() - 1]
+                    if D[nova.getId() - 1] == float('inf'):
+                        D[nova.getId() - 1] = D[x.getId() - 1] + 1
+                        Q.put(nova)
+
+        return D[-1] != float('inf')
+
+    def DFS(self, mate, x, D, null):
+        if x != null:
+            for y in x.getAdjList():
+                y = self._nodes[y.getId() - 1]
+                nova = mate[y.getId() - 1]
+                if D[nova.getId() - 1] == D[x.getId() - 1] + 1:
+                    if self.DFS(mate, nova, D, null):
+                        mate[y.getId() - 1] = x
+                        mate[x.getId() - 1] = y
+                        return True
+
+            D[x.getId() - 1] = float('inf')
+            return False
+
+        return True
+
+    def print_hopcroft_karp(self):
+        max_par, edges = self.hopcroft_karp()
+        aux = []
+        for i in range(len(edges)):
+            begin_vertex = self._nodes[i]
+            end_vertex = edges[i]
+            if [begin_vertex, end_vertex] not in aux and [end_vertex, begin_vertex] not in aux:
+                aux.append([begin_vertex, end_vertex])
+
+        print(f"Emparelhamento Máximo: {max_par} \n"
+              f"Arestas: ", end="")
+        print(*aux, sep=", ")
+
+    def split_graph(self):
+        X = []
+        Y = []
+        for u, v, _ in self._edges:
+            u = self._nodes[u - 1]
+            v = self._nodes[v - 1]
+            if u not in X and u not in Y:
+                X.append(u)
+            if v not in X and v not in Y:
+                Y.append(v)
+
+        return X, Y
