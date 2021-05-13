@@ -540,50 +540,37 @@ class Graph:
 
     def hopcroft_karp(self):
         null = Node(7, None)
-        D = [float('inf') for vertex in self._nodes]
+        D = [float('inf') for _ in self._nodes]
         D.append(float("inf"))
-        mate = [null for vertex in self._nodes]
+        mate = [null for _ in self._nodes]
 
         m = 0
-        X = self._nodes[:3]
+        X, _ = self.split_graph()
 
-        while self.BFS(mate, D, null):
-            # print("hi")
+        while self.BFS(mate, D, null, X):
             for x in X:
-                # print(x, type(x))
                 if mate[x.getId() - 1] == null:
                     if self.DFS(mate, x, D, null):
                         m += 1
 
         return (m, mate)
 
-    def BFS(self, mate, D, null):
+    def BFS(self, mate, D, null, X):
         Q = Queue()
-        X = self._nodes[:3]
         for x in X:
-            # print(x, type(x))
-            # print(null, type(null))
             if mate[x.getId() - 1] == null:
-                # print(D)
-                # print("hi")
                 D[x.getId() - 1] = 0
-                # print(D)
                 Q.put(x)
             else:
                 D[x.getId() - 1] = float('inf')
 
-        # D.append(float('inf'))
         D[-1] = float("inf")
-        # print(D[-1])
         while not Q.empty():
             x = Q.get()
             if D[x.getId() - 1] < D[-1]:
-                # print("hi")
                 for y in x.getAdjList():
                     y = self._nodes[y.getId() - 1]
-                    # print(y, type(y), y.getId())
                     nova = mate[y.getId() - 1]
-                    # print(nova, type(nova))
                     if D[nova.getId() - 1] == float('inf'):
                         D[nova.getId() - 1] = D[x.getId() - 1] + 1
                         Q.put(nova)
@@ -605,3 +592,29 @@ class Graph:
             return False
 
         return True
+
+    def print_hopcroft_karp(self):
+        max_par, edges = self.hopcroft_karp()
+        aux = []
+        for i in range(len(edges)):
+            begin_vertex = self._nodes[i]
+            end_vertex = edges[i]
+            if [begin_vertex, end_vertex] not in aux and [end_vertex, begin_vertex] not in aux:
+                aux.append([begin_vertex, end_vertex])
+
+        print(f"Emparelhamento Máximo: {max_par} \n"
+              f"Arestas: ", end="")
+        print(*aux, sep=", ")
+
+    def split_graph(self):
+        X = []
+        Y = []
+        for u, v, _ in self._edges:
+            u = self._nodes[u - 1]
+            v = self._nodes[v - 1]
+            if u not in X and u not in Y:
+                X.append(u)
+            if v not in X and v not in Y:
+                Y.append(v)
+
+        return X, Y
