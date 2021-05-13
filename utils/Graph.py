@@ -539,7 +539,7 @@ class Graph:
         print(app)
 
     def hopcroft_karp(self):
-        null = Node(7, None)
+        null = Node(len(self._nodes) + 1, None)
         D = [float('inf') for _ in self._nodes]
         D.append(float("inf"))
         mate = [null for _ in self._nodes]
